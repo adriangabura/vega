@@ -10,19 +10,19 @@ class SQLAlchemyRepositoryContext(AbstractRepositoryContext):
     def __init__(self, session: "Session"):
         self.session = session
 
-    def commit(self) -> None:
+    def commit(self) -> tp.NoReturn:
         self.session.commit()
 
-    def rollback(self) -> None:
+    def rollback(self) -> tp.NoReturn:
         self.session.rollback()
 
-    def add(self, model) -> None:
+    def add(self, model) -> tp.NoReturn:
         self.session.add(model)
 
-    def remove(self, model) -> None:
+    def remove(self, model) -> tp.NoReturn:
         self.session.delete(model)
 
-    def close(self) -> None:
+    def close(self) -> tp.NoReturn:
         self.session.close()
 
 

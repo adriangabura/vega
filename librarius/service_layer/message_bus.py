@@ -35,7 +35,7 @@ class MessageBus:
             else:
                 raise Exception(f"{message} was not an Event, Command or Query")
 
-    def handle_event(self, event: events.AbstractEvent) -> None:
+    def handle_event(self, event: events.AbstractEvent) -> tp.NoReturn:
         for handler in self.event_handlers[type(event)]:
             try:
                 logger.debug(f"Handling event {event} with handler {handler}")
@@ -45,7 +45,7 @@ class MessageBus:
                 logger.exception(f"Exception handling event {event}")
                 continue
 
-    def handle_command(self, command: commands.AbstractCommand) -> None:
+    def handle_command(self, command: commands.AbstractCommand) -> tp.NoReturn:
         logger.debug(f"Handling command {command}")
         try:
             handler = self.command_handlers[type(command)]

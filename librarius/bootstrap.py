@@ -3,10 +3,9 @@ import typing as tp
 from librarius.adapters import orm, redis_eventpublisher
 from librarius.adapters.notifications import MemoryNotification
 from librarius.service_layer import handlers, message_bus, uow as uow_package
-from librarius.service_layer.handlers import sqlalchemy_query_handlers
 
 if tp.TYPE_CHECKING:
-    from librarius.types import Message
+    from librarius.types import Message, Handler
     from librarius.service_layer import AbstractUnitOfWork
     from librarius.adapters.notifications import AbstractNotification
     from librarius.domain.events import AbstractEvent
@@ -14,12 +13,13 @@ if tp.TYPE_CHECKING:
     from librarius.domain.queries import AbstractQuery
 
 
-def inject_dependencies(handler: tp.Callable, dependencies: dict) -> tp.Callable[["Message"], tp.Union[tp.Any, None]]:
+def inject_dependencies(handler: tp.Callable, input_dependencies: dict) -> "Handler":
     params = inspect.signature(handler).parameters
-    deps: dict[str, tp.Union[tp.Callable, tp.Type]] = {name: dependency for name, dependency in dependencies.items() if name in params}
+    dependencies: dict[str, tp.Union[tp.Callable, tp.Type]] = {
+        name: dependency for name, dependency in input_dependencies.items() if name in params}
 
-    def handler_with_injections(message: "Message") -> tp.Union[tp.Any, None]:
-        return handler(message, **deps)
+    def handler_with_injections(message: "Message") -> tp.Callable[["Message"], "Handler"]:
+        return handler(message, **dependencies)
 
     return handler_with_injections
 
@@ -55,7 +55,7 @@ def bootstrap(
 
     injected_query_handlers: dict[tp.Type["AbstractQuery"], tp.Callable] = {
         query_type: inject_dependencies(handler, dependencies)
-        for query_type, handler in sqlalchemy_query_handlers.QUERY_HANDLERS.items()
+        for query_type, handler in handlers.QUERY_HANDLERS.items()
     }
 
     return message_bus.MessageBus(

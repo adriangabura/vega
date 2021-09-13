@@ -15,23 +15,23 @@ class AbstractUnitOfWork(abc.ABC):
     @abc.abstractmethod
     def __init__(self,
                  repository_factory: "AbstractRepositoryMaker",
-                 context_factory: "AbstractContextMaker") -> None:
+                 context_factory: "AbstractContextMaker") -> tp.NoReturn:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def __enter__(self) -> "AbstractUnitOfWork":
+    def __enter__(self, *args, **kwargs) -> "AbstractUnitOfWork":
         raise NotImplementedError
 
     @abc.abstractmethod
-    def __exit__(self) -> None:
+    def __exit__(self, *args, **kwargs) -> tp.NoReturn:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def commit(self) -> None:
+    def commit(self) -> tp.NoReturn:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def rollback(self) -> None:
+    def rollback(self) -> tp.NoReturn:
         raise NotImplementedError
 
     @abc.abstractmethod

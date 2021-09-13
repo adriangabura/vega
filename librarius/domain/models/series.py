@@ -15,7 +15,7 @@ class Series(Entity):
             date_added: datetime = None,
             date_modified: datetime = None,
             name: str = None
-    ):
+    ) -> None:
         super().__init__(uuid=uuid, date_added=date_added, date_modified=date_modified)
         self.name: str = name
         self.publications: list["Publication"] = []

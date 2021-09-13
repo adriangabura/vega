@@ -15,7 +15,7 @@ def add_author(cmd: "commands.AddAuthor", uow: "AbstractUnitOfWork"):
         pass
 
 
-def add_publication(cmd: "commands.AddPublication", uow: "AbstractUnitOfWork"):
+def add_publication(cmd: "commands.AddPublication", uow: "AbstractUnitOfWork") -> tp.NoReturn:
     with uow:
         #publication = uow.repositories.publication.find(cmd.uuid)
         #if publication is None:
@@ -31,7 +31,7 @@ def remove_publication(cmd: "commands.RemovePublication", uow: "AbstractUnitOfWo
     pass
 
 
-COMMAND_HANDLERS: dict[tp.Type["commands.AbstractCommand"], "CommandHandler"] = {
+COMMAND_HANDLERS: tp.Mapping[tp.Type["commands.AbstractCommand"], "CommandHandler"] = {
     commands.AddPublication: add_publication,
     commands.RemovePublication: remove_publication
 }

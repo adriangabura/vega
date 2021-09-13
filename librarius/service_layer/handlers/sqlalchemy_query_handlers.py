@@ -28,6 +28,6 @@ def retrieve_all_publications(query: queries.AllPublications, uow: "SQLAlchemyUn
         logger.exception(error)
 
 
-QUERY_HANDLERS: dict[tp.Type["queries.AbstractQuery"], "QueryHandler"] = {
+QUERY_HANDLERS: tp.Mapping[tp.Type["queries.AbstractQuery"], "QueryHandler"] = {
     queries.AllPublications: retrieve_all_publications
 }

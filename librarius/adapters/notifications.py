@@ -1,3 +1,4 @@
+import typing as tp
 import abc
 
 
@@ -15,5 +16,5 @@ class MemoryNotification(AbstractNotification):
     def __init__(self, host=DEFAULT_HOST, port=DEFAULT_PORT):
         self.server = []
 
-    def send(self, destination, message) -> None:
+    def send(self, destination, message) -> tp.NoReturn:
         msg = f"Subject: some notification \n {message}"

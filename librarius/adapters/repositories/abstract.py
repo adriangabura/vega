@@ -7,18 +7,18 @@ if tp.TYPE_CHECKING:
 
 
 class AbstractRepository(abc.ABC):
-    name: str = "abstract"
+    name: tp.ClassVar[str] = "abstract"
 
     def __init__(self, context: "AbstractRepositoryContext"):
         self.context = context
         self.seen: set = set()
 
     @abc.abstractmethod
-    def add(self, model) -> None:
+    def add(self, model):
         self.context.add(model)
 
     @abc.abstractmethod
-    def remove(self, model) -> None:
+    def remove(self, model):
         self.context.remove(model)
 
     @abc.abstractmethod

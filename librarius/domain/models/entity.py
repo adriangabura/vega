@@ -12,7 +12,7 @@ class Entity:
     _repr_attributes: list[str] = ['uuid', 'date_added', 'date_modified']
 
     @classmethod
-    def _add_repr_attribute(cls, attribute: str) -> None:
+    def _add_repr_attribute(cls, attribute: str) -> tp.NoReturn:
         if attribute in cls.__class__ and attribute not in cls._repr_attributes:
             cls._repr_attributes.append(attribute)
         else:

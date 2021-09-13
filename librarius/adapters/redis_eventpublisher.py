@@ -1,3 +1,4 @@
+import typing as tp
 import json
 import logging
 from dataclasses import asdict
@@ -14,6 +15,6 @@ class Butaforie:
 r = Butaforie()
 
 
-def publish(channel, event: events.AbstractEvent) -> None:
+def publish(channel, event: events.AbstractEvent) -> tp.NoReturn:
     logging.info(f"publishing: channel={channel}, event={event}")
     r.publish(channel, json.dumps(asdict(event)))

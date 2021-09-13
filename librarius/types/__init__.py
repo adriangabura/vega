@@ -1,1 +1,1 @@
-from .types import Reference, Message, EventHandler, CommandHandler, QueryHandler
+from .types import Reference, Message, EventHandler, CommandHandler, QueryHandler, Handler

@@ -7,13 +7,13 @@ if tp.TYPE_CHECKING:
 
 
 class PublicationsRepository(AbstractRepository):
-    name: str = "publications"
+    name: tp.ClassVar[str] = "publications"
 
-    def add(self, publication: "Publication") -> None:
+    def add(self, publication: "Publication") -> tp.NoReturn:
         self.context.add(publication)
         self.seen.add(publication)
 
-    def remove(self, publication: "Publication") -> None:
+    def remove(self, publication: "Publication") -> tp.NoReturn:
         self.context.remove(publication)
 
     def find(self):

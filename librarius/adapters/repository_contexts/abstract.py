@@ -11,23 +11,23 @@ class AbstractRepositoryContext(abc.ABC):
     session: tp.Optional[tp.Any]
 
     @abc.abstractmethod
-    def commit(self) -> None:
+    def commit(self) -> tp.NoReturn:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def rollback(self) -> None:
+    def rollback(self) -> tp.NoReturn:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def add(self, model) -> None:
+    def add(self, model) -> tp.NoReturn:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def remove(self, model) -> None:
+    def remove(self, model) -> tp.NoReturn:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def close(self) -> None:
+    def close(self) -> tp.NoReturn:
         raise NotImplementedError
 
 

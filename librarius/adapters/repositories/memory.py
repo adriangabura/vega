@@ -11,7 +11,7 @@ if tp.TYPE_CHECKING:
 
 
 class MemoryRepository(AbstractRepository):
-    name: str = "memory"
+    name: tp.ClassVar[str] = "memory"
 
     def __init__(self, context: "MemoryRepositoryContext"):
         super().__init__(context)

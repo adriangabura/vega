@@ -13,7 +13,7 @@ def publication_added(event: "events.PublicationAdded", uow: "AbstractUnitOfWork
     print("ADDED")
 
 
-EVENT_HANDLERS: dict[tp.Type["events.AbstractEvent"], list["EventHandler"]] = {
+EVENT_HANDLERS: tp.Mapping[tp.Type["events.AbstractEvent"], tp.Sequence["EventHandler"]] = {
     events.PublicationAdded: [publication_added],
     events.PublicationModified: [],
     events.PublicationRemoved: []

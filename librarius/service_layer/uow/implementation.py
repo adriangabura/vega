@@ -27,10 +27,10 @@ class SQLAlchemyUnitOfWork(AbstractUnitOfWork):
         self.context.rollback()
         self.context.close()
 
-    def commit(self) -> None:
+    def commit(self) -> tp.NoReturn:
         self.context.commit()
 
-    def rollback(self) -> None:
+    def rollback(self) -> tp.NoReturn:
         self.context.rollback()
 
     def collect_new_events(self) -> tp.Generator["AbstractEvent", None, None]:
