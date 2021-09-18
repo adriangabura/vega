@@ -1,7 +1,7 @@
 import typing as tp
 from datetime import datetime, date
 from librarius.domain.models import Entity, date_factory
-from librarius.domain import events
+from librarius.domain.messages import events
 
 if tp.TYPE_CHECKING:
     from librarius.domain.models.author import Author
@@ -23,5 +23,5 @@ class Publication(Entity):
         self.title: str = title
         self.authors: list["Author"] = []
 
-    def add_publication(self) -> tp.NoReturn:
+    def add_publication(self) -> None:
         self.events.append(events.PublicationAdded())

@@ -1,37 +1,40 @@
 import typing as tp
 import logging
-from librarius.domain import commands
+from librarius.service_layer.handlers import AbstractCommandHandler
+from librarius.domain.messages import commands, TAbstractCommand
 from librarius.domain import models
 
 if tp.TYPE_CHECKING:
-    from librarius.types import CommandHandler
+    from librarius.domain.messages import AbstractCommand
     from librarius.service_layer.uow import AbstractUnitOfWork
 
 logger = logging.getLogger(__name__)
 
 
-def add_author(cmd: "commands.AddAuthor", uow: "AbstractUnitOfWork"):
-    with uow:
+class AddAuthorHandler(AbstractCommandHandler[commands.AddAuthor]):
+    def __call__(self, cmd: 'commands.AddAuthor'):
         pass
 
 
-def add_publication(cmd: "commands.AddPublication", uow: "AbstractUnitOfWork") -> tp.NoReturn:
-    with uow:
-        #publication = uow.repositories.publication.find(cmd.uuid)
-        #if publication is None:
-        #    publication = models.Publication()
-        #    uow.repositories.publication.add(publication)
-        publication = models.Publication(title=cmd.title, uuid=cmd.uuid)
-        publication.add_publication()
-        uow.repositories.publications.add(publication)
-        uow.commit()
+class AddPublicationHandler(AbstractCommandHandler[commands.AddPublication]):
+    def __call__(self, cmd: 'commands.AddPublication'):
+        with self.uow:
+            # publication = uow.repositories.publication.find(cmd.uuid)
+            # if publication is None:
+            #    publication = models.Publication()
+            #    uow.repositories.publication.add(publication)
+            publication = models.Publication(title=cmd.title, uuid=cmd.uuid)
+            publication.add_publication()
+            self.uow.repositories.publications.add(publication)
+            self.uow.commit()
 
 
-def remove_publication(cmd: "commands.RemovePublication", uow: "AbstractUnitOfWork"):
-    pass
+class RemovePublicationHandler(AbstractCommandHandler[commands.RemovePublication]):
+    def __call__(self, cmd: 'commands.RemovePublication'):
+        pass
 
 
-COMMAND_HANDLERS: tp.Mapping[tp.Type["commands.AbstractCommand"], "CommandHandler"] = {
-    commands.AddPublication: add_publication,
-    commands.RemovePublication: remove_publication
+COMMAND_HANDLERS: dict[tp.Type["AbstractCommand"], "AbstractCommandHandler"] = {
+    commands.AddPublication: AddPublicationHandler,
+    commands.RemovePublication: RemovePublicationHandler
 }

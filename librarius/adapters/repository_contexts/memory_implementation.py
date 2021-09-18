@@ -6,17 +6,17 @@ class MemoryRepositoryContext(AbstractRepositoryContext):
     def __init__(self, data: dict = None) -> None:
         self.data = data if data is not None else {}
 
-    def commit(self) -> tp.NoReturn:
+    def commit(self) -> None:
         pass
 
-    def rollback(self) -> tp.NoReturn:
+    def rollback(self) -> None:
         pass
 
-    def add(self, model) -> tp.NoReturn:
+    def add(self, model) -> None:
         self.data[model.uuid] = model
 
-    def remove(self, model) -> tp.NoReturn:
+    def remove(self, model) -> None:
         del self.data[model.uuid]
 
-    def close(self) -> tp.NoReturn:
+    def close(self) -> None:
         pass

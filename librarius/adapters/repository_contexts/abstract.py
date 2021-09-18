@@ -3,35 +3,38 @@ import typing as tp
 
 from librarius.utils import Map
 
-if tp.TYPE_CHECKING:
-    from librarius.adapters.repositories import AbstractRepository
+
+TAbstractRepositoryContext = tp.TypeVar('TAbstractRepositoryContext', bound='AbstractRepositoryContext')
 
 
-class AbstractRepositoryContext(abc.ABC):
-    session: tp.Optional[tp.Any]
+class AbstractRepositoryContext(abc.ABC, tp.Generic[TAbstractRepositoryContext]):
+    session: tp.Any
 
     @abc.abstractmethod
-    def commit(self) -> tp.NoReturn:
+    def commit(self) -> None:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def rollback(self) -> tp.NoReturn:
+    def rollback(self) -> None:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def add(self, model) -> tp.NoReturn:
+    def add(self, model) -> None:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def remove(self, model) -> tp.NoReturn:
+    def remove(self, model) -> None:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def close(self) -> tp.NoReturn:
+    def close(self) -> None:
         raise NotImplementedError
 
 
-class AbstractContextMaker(abc.ABC):
+TAbstractContextMaker = tp.TypeVar('TAbstractContextMaker', bound='AbstractContextMaker')
+
+
+class AbstractContextMaker(abc.ABC, tp.Generic[TAbstractContextMaker, TAbstractRepositoryContext]):
     @abc.abstractmethod
-    def __call__(self) -> "AbstractRepositoryContext":
+    def __call__(self) -> "TAbstractRepositoryContext":
         raise NotImplementedError

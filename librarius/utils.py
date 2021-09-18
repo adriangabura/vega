@@ -1,3 +1,11 @@
+import typing as tp
+import abc
+
+
+K = tp.TypeVar('K')
+V = tp.TypeVar('V')
+
+
 class Map(dict):
     """
     Example:

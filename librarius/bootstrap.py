@@ -8,18 +8,17 @@ if tp.TYPE_CHECKING:
     from librarius.types import Message, Handler
     from librarius.service_layer import AbstractUnitOfWork
     from librarius.adapters.notifications import AbstractNotification
-    from librarius.domain.events import AbstractEvent
-    from librarius.domain.commands import AbstractCommand
-    from librarius.domain.queries import AbstractQuery
+    from librarius.domain.messages import AbstractCommand, AbstractEvent, AbstractQuery, AbstractMessage
+    from librarius.service_layer.handlers import AbstractHandler
 
 
-def inject_dependencies(handler: tp.Callable, input_dependencies: dict) -> "Handler":
-    params = inspect.signature(handler).parameters
+def inject_dependencies(handler_type: tp.Type['AbstractHandler'], input_dependencies: dict) -> tp.Callable:
+    params = inspect.signature(handler_type).parameters
     dependencies: dict[str, tp.Union[tp.Callable, tp.Type]] = {
         name: dependency for name, dependency in input_dependencies.items() if name in params}
 
-    def handler_with_injections(message: "Message") -> tp.Callable[["Message"], "Handler"]:
-        return handler(message, **dependencies)
+    def handler_with_injections(message: "AbstractMessage") -> tp.Callable[["AbstractMessage"], "Handler"]:
+        return handler_type(**dependencies)(message)
 
     return handler_with_injections
 
@@ -30,7 +29,6 @@ def bootstrap(
         notifications: "AbstractNotification" = None,
         publish: tp.Callable = redis_eventpublisher.publish
 ) -> message_bus.MessageBus:
-
     if notifications is None:
         notifications = MemoryNotification()
 

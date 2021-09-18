@@ -16,5 +16,5 @@ class MemoryNotification(AbstractNotification):
     def __init__(self, host=DEFAULT_HOST, port=DEFAULT_PORT):
         self.server = []
 
-    def send(self, destination, message) -> tp.NoReturn:
+    def send(self, destination, message) -> None:
         msg = f"Subject: some notification \n {message}"

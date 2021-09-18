@@ -1,10 +1,8 @@
-import typing as tp
 import json
 import logging
 from dataclasses import asdict
 
-from librarius.config import config
-from librarius.domain import events
+from librarius.domain.messages import AbstractEvent
 
 logger = logging.getLogger(__name__)
 
@@ -15,6 +13,7 @@ class Butaforie:
 r = Butaforie()
 
 
-def publish(channel, event: events.AbstractEvent) -> tp.NoReturn:
+def publish(channel, event: AbstractEvent) -> None:
     logging.info(f"publishing: channel={channel}, event={event}")
-    r.publish(channel, json.dumps(asdict(event)))
+    #r.publish(channel, json.dumps(asdict(event)))
+    r.publish(channel, event)

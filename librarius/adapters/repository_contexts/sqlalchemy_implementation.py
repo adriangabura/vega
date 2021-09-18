@@ -1,32 +1,32 @@
 import abc
 import typing as tp
-from librarius.adapters.repository_contexts import AbstractRepositoryContext, AbstractContextMaker
+from librarius.adapters.repository_contexts.abstract import TAbstractRepositoryContext, AbstractRepositoryContext, AbstractContextMaker
 
 if tp.TYPE_CHECKING:
     from sqlalchemy.orm import Session, sessionmaker
 
 
-class SQLAlchemyRepositoryContext(AbstractRepositoryContext):
+class SQLAlchemyRepositoryContext(AbstractRepositoryContext['SQLAlchemyRepositoryContext']):
     def __init__(self, session: "Session"):
-        self.session = session
+        self.session: "Session" = session
 
-    def commit(self) -> tp.NoReturn:
+    def commit(self) -> None:
         self.session.commit()
 
-    def rollback(self) -> tp.NoReturn:
+    def rollback(self) -> None:
         self.session.rollback()
 
-    def add(self, model) -> tp.NoReturn:
+    def add(self, model) -> None:
         self.session.add(model)
 
-    def remove(self, model) -> tp.NoReturn:
+    def remove(self, model) -> None:
         self.session.delete(model)
 
-    def close(self) -> tp.NoReturn:
+    def close(self) -> None:
         self.session.close()
 
 
-class SQLAlchemyContextMaker(AbstractContextMaker):
+class SQLAlchemyContextMaker(AbstractContextMaker['SQLAlchemyContextMaker', 'SQLAlchemyRepositoryContext']):
     def __init__(self, session_factory: "sessionmaker"):
         self.session_factory = session_factory
 

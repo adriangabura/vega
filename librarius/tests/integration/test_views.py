@@ -7,7 +7,7 @@ from sqlalchemy.orm import clear_mappers
 
 from librarius import bootstrap
 from librarius.service_layer.uow import SQLAlchemyUnitOfWork
-from librarius.domain import commands, queries
+from librarius.domain.messages import commands, queries
 
 if tp.TYPE_CHECKING:
     from librarius.service_layer.message_bus import MessageBus

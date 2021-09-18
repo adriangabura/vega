@@ -1,10 +1,10 @@
 import dataclasses
 from uuid import UUID
-from librarius.domain.commands import AbstractCommand
+from librarius.domain.messages import AbstractCommand
 
 
 @dataclasses.dataclass
-class AuthorBaseCommand(AbstractCommand):
+class AuthorBaseCommand(AbstractCommand['AuthorBaseCommand']):
     uuid: UUID
 
 

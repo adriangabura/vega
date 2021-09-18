@@ -1,15 +1,20 @@
 import abc
 import typing as tp
 
+from librarius.adapters.repository_contexts import TAbstractRepositoryContext
+
 if tp.TYPE_CHECKING:
-    from librarius.adapters.repository_contexts import AbstractRepositoryContext
+    from librarius.adapters.repository_contexts.abstract import AbstractRepositoryContext
     from librarius.utils import Map
 
 
-class AbstractRepository(abc.ABC):
-    name: tp.ClassVar[str] = "abstract"
+TAbstractRepository = tp.TypeVar('TAbstractRepository', bound='AbstractRepository')
 
-    def __init__(self, context: "AbstractRepositoryContext"):
+
+class AbstractRepository(abc.ABC, tp.Generic[TAbstractRepository, TAbstractRepositoryContext]):
+    name: tp.ClassVar[str] = "abstract.py"
+
+    def __init__(self, context: "TAbstractRepositoryContext"):
         self.context = context
         self.seen: set = set()
 
@@ -26,11 +31,15 @@ class AbstractRepository(abc.ABC):
         pass
 
 
-class AbstractRepositoryMaker(abc.ABC):
+TAbstractRepositoryMaker = tp.TypeVar('TAbstractRepositoryMaker', bound='AbstractRepositoryMaker')
+
+
+class AbstractRepositoryMaker(abc.ABC,
+                              tp.Generic[TAbstractRepositoryMaker, TAbstractRepository, TAbstractRepositoryContext]):
     @abc.abstractmethod
-    def __init__(self, *args: tp.Type["AbstractRepository"]):
+    def __init__(self, *args: tp.Type["TAbstractRepository"]):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def __call__(self, context: "AbstractRepositoryContext") -> "Map[str, AbstractRepository]":
+    def __call__(self, context: "TAbstractRepositoryContext") -> "Map[str, TAbstractRepository]":
         raise NotImplementedError
