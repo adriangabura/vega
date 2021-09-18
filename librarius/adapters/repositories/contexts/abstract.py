@@ -1,8 +1,6 @@
 import abc
 import typing as tp
 
-from librarius.utils import Map
-
 
 TAbstractRepositoryContext = tp.TypeVar('TAbstractRepositoryContext', bound='AbstractRepositoryContext')
 

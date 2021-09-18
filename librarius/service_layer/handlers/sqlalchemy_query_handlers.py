@@ -28,6 +28,6 @@ class RetrieveAllPublications(AbstractQueryHandler[queries.AllPublications]):
             logger.exception(error)
 
 
-QUERY_HANDLERS: tp.Mapping[tp.Type["queries.AbstractQuery"], "QueryHandler"] = {
+QUERY_HANDLERS: tp.DefaultDict[tp.Type, "AbstractQueryHandler"] = {
     queries.AllPublications: RetrieveAllPublications
 }

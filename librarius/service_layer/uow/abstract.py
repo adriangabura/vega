@@ -1,24 +1,23 @@
 import abc
 import typing as tp
 
-from librarius.utils import Map
-
 if tp.TYPE_CHECKING:
-    from librarius.domain.messages.events import AbstractEvent
-    from librarius.adapters.repositories.abstract import AbstractRepository, TAbstractRepositoryMaker
-    from librarius.adapters.repository_contexts.abstract import TAbstractContextMaker, AbstractRepositoryContext
+    from librarius.domain.messages import AbstractEvent
+    from librarius.adapters.repositories.abstract import AbstractRepository
+    from librarius.adapters.repositories.contexts.abstract import TAbstractContextMaker, AbstractRepositoryContext
+    from librarius.adapters.repositories.factory import AbstractRepositoryCollection
 
 
 TAbstractUnitOfWork = tp.TypeVar('TAbstractUnitOfWork', bound='AbstractUnitOfWork')
 
 
 class AbstractUnitOfWork(abc.ABC, tp.Generic[TAbstractUnitOfWork]):
-    repositories: "Map[str, AbstractRepository]"
+    repositories: "AbstractRepositoryCollection"
     context: "AbstractRepositoryContext"
 
     @abc.abstractmethod
     def __init__(self,
-                 repository_factory: "TAbstractRepositoryMaker",
+                 repository_factory,
                  context_factory: "TAbstractContextMaker") -> None:
         raise NotImplementedError
 

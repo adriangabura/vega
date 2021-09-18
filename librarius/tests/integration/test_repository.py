@@ -2,9 +2,7 @@ import typing as tp
 import pytest
 from librarius.adapters import repositories
 from librarius.domain import models
-from sqlalchemy.sql.expression import TextClause
-from sqlalchemy import text
-from librarius.adapters.repository_contexts import SQLAlchemyRepositoryContext
+from librarius.adapters.repositories.contexts import SQLAlchemyRepositoryContext
 
 if tp.TYPE_CHECKING:
     from sqlalchemy.orm import Session

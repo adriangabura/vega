@@ -1,5 +1,5 @@
 import typing as tp
-from librarius.adapters.repositories import AbstractRepository
+from librarius.adapters.repositories.abstract import AbstractRepository
 
 if tp.TYPE_CHECKING:
     from librarius.types import Reference

@@ -11,7 +11,7 @@ from librarius.domain.messages import commands, queries
 
 if tp.TYPE_CHECKING:
     from librarius.service_layer.message_bus import MessageBus
-    from librarius.adapters.repository_contexts import SQLAlchemyContextMaker
+    from librarius.adapters.repositories.contexts import SQLAlchemyContextMaker
 
 
 @pytest.fixture

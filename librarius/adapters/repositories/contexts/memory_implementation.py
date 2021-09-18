@@ -1,8 +1,7 @@
-import typing as tp
-from librarius.adapters.repository_contexts import AbstractRepositoryContext
+from librarius.adapters.repositories.contexts import AbstractRepositoryContext
 
 
-class MemoryRepositoryContext(AbstractRepositoryContext):
+class MemoryRepositoryContext(AbstractRepositoryContext['MemoryRepositoryContext']):
     def __init__(self, data: dict = None) -> None:
         self.data = data if data is not None else {}
 

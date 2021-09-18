@@ -1,6 +1,5 @@
-import abc
 import typing as tp
-from librarius.adapters.repository_contexts.abstract import TAbstractRepositoryContext, AbstractRepositoryContext, AbstractContextMaker
+from librarius.adapters.repositories.contexts.abstract import AbstractRepositoryContext, AbstractContextMaker
 
 if tp.TYPE_CHECKING:
     from sqlalchemy.orm import Session, sessionmaker
