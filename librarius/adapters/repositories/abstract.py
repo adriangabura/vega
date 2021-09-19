@@ -28,17 +28,3 @@ class AbstractRepository(abc.ABC, tp.Generic[TAbstractRepository, TAbstractRepos
     @abc.abstractmethod
     def find(self):
         pass
-
-
-# TAbstractRepositoryMaker = tp.TypeVar('TAbstractRepositoryMaker', bound='AbstractRepositoryMaker')
-#
-#
-# class AbstractRepositoryMaker(abc.ABC,
-#                               tp.Generic[TAbstractRepositoryMaker, TAbstractRepository, TAbstractRepositoryContext]):
-#     @abc.abstractmethod
-#     def __init__(self, *args: tp.Type["TAbstractRepository"]):
-#         raise NotImplementedError
-#
-#     @abc.abstractmethod
-#     def __call__(self, context: "TAbstractRepositoryContext") -> "Map[str, TAbstractRepository]":
-#         raise NotImplementedError

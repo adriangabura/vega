@@ -9,6 +9,13 @@ class AddPublication(AbstractCommand['AddPublication']):
 
 
 @dataclasses.dataclass
+class AddAuthorToPublication(AbstractCommand['AddAuthorToPublication']):
+    publication_uuid: str
+    author_uuid: str
+    author_title: str
+
+
+@dataclasses.dataclass
 class ModifyPublication(AbstractCommand['ModifyPublication']):
     pass
 

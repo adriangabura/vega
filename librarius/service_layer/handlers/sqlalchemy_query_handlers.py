@@ -8,7 +8,6 @@ from librarius.service_layer.uow import SQLAlchemyUnitOfWork
 
 if tp.TYPE_CHECKING:
     from sqlalchemy.orm import Session
-    from librarius.types import QueryHandler
 
 logger = logging.getLogger(__name__)
 
@@ -28,6 +27,6 @@ class RetrieveAllPublications(AbstractQueryHandler[queries.AllPublications]):
             logger.exception(error)
 
 
-QUERY_HANDLERS: tp.DefaultDict[tp.Type, "AbstractQueryHandler"] = {
+QUERY_HANDLERS: tp.Mapping[tp.Type['AbstractQuery'], tp.Type["AbstractQueryHandler"]] = {
     queries.AllPublications: RetrieveAllPublications
 }

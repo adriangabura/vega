@@ -1,19 +1,19 @@
 import typing as tp
 import logging
 from librarius.service_layer.handlers import AbstractCommandHandler
-from librarius.domain.messages import commands, TAbstractCommand
+from librarius.domain.messages import commands
 from librarius.domain import models
 
 if tp.TYPE_CHECKING:
     from librarius.domain.messages import AbstractCommand
-    from librarius.service_layer.uow import AbstractUnitOfWork
 
 logger = logging.getLogger(__name__)
 
 
-class AddAuthorHandler(AbstractCommandHandler[commands.AddAuthor]):
-    def __call__(self, cmd: 'commands.AddAuthor'):
-        pass
+class AddAuthorToPublicationHandler(AbstractCommandHandler[commands.AddAuthor]):
+    def __call__(self, cmd: 'commands.AddAuthorToPublication'):
+        with self.uow as uow:
+            pass
 
 
 class AddPublicationHandler(AbstractCommandHandler[commands.AddPublication]):
@@ -34,7 +34,8 @@ class RemovePublicationHandler(AbstractCommandHandler[commands.RemovePublication
         pass
 
 
-COMMAND_HANDLERS: dict[tp.Type["AbstractCommand"], "AbstractCommandHandler"] = {
+COMMAND_HANDLERS: tp.Mapping[tp.Type["AbstractCommand"], tp.Type["AbstractCommandHandler"]] = {
     commands.AddPublication: AddPublicationHandler,
-    commands.RemovePublication: RemovePublicationHandler
+    commands.RemovePublication: RemovePublicationHandler,
+    commands.AddAuthorToPublication: AddAuthorToPublicationHandler
 }

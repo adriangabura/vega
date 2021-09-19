@@ -6,13 +6,19 @@ from librarius.service_layer.handlers import AbstractEventHandler
 logger = logging.getLogger(__name__)
 
 
-class PublicationAdded(AbstractEventHandler[events.PublicationAdded]):
-    def __call__(self, event: 'AbstractEvent'):
-        print("ADDED")
+class PublicationAddedHandler(AbstractEventHandler[events.PublicationAdded]):
+    def __call__(self, event: 'events.PublicationAdded'):
+        logger.info('Publication added')
 
 
-EVENT_HANDLERS: tp.Mapping[tp.Type["AbstractEvent"], tp.Sequence["AbstractEventHandler"]] = {
-    events.PublicationAdded: [PublicationAdded],
+class AuthorAddedHandler(AbstractEventHandler[events.AuthorAdded]):
+    def __call__(self, event: 'events.AuthorAdded'):
+        logger.info('Author added')
+
+
+EVENT_HANDLERS: tp.Mapping[tp.Type["AbstractEvent"], tp.Sequence[tp.Type[AbstractEventHandler]]] = {
+    events.PublicationAdded: [PublicationAddedHandler],
     events.PublicationModified: [],
-    events.PublicationRemoved: []
+    events.PublicationRemoved: [],
+    events.AuthorAdded: [AuthorAddedHandler]
 }

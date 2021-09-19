@@ -2,6 +2,7 @@ import typing as tp
 from unittest import mock
 from uuid import uuid4
 import pytest
+import logging
 
 from sqlalchemy.orm import clear_mappers
 
@@ -29,6 +30,9 @@ def sqlite_bus(sql_alchemy_context_factory: "SQLAlchemyContextMaker"):
 
 
 def test_handle_view(sqlite_bus: "MessageBus"):
-    sqlite_bus.handle(commands.AddPublication("cerbulan", str(uuid4())))
+    publication_uuid = str(uuid4())
+
+    sqlite_bus.handle(commands.AddPublication("cerbulan", publication_uuid))
     results = sqlite_bus.handle(queries.AllPublications())
-    print("results:", results)
+    logger = logging.getLogger(__name__)
+    logger.info(f'results: {results}')

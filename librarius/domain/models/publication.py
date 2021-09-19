@@ -25,3 +25,7 @@ class Publication(Entity):
 
     def add_publication(self) -> None:
         self.events.append(events.PublicationAdded())
+
+    def add_author(self, author: 'Author'):
+        self.authors.append(author)
+        self.events.append(events.AuthorAdded())

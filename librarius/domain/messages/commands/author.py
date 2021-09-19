@@ -5,7 +5,7 @@ from librarius.domain.messages import AbstractCommand
 
 @dataclasses.dataclass
 class AuthorBaseCommand(AbstractCommand['AuthorBaseCommand']):
-    uuid: UUID
+    uuid: str
 
 
 @dataclasses.dataclass
