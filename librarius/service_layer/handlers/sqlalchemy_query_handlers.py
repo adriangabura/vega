@@ -54,8 +54,18 @@ class RetrieveSeriesByUuid(AbstractQueryHandler[queries.SeriesByUuid]):
             return result
 
 
+class RetrievePublicationByUuid(AbstractQueryHandler[queries.PublicationByUuid]):
+    def __call__(self, query: 'queries.PublicationByUuid'):
+        with self.uow as uow_context:
+            session: 'Session' = self.uow.context.session
+            result: "Publication" = session.query(Publication).filter_by(uuid=query.publication_uuid).first()
+            session.expunge_all()
+            return result
+
+
 QUERY_HANDLERS: tp.Mapping[tp.Type['AbstractQuery'], tp.Type["AbstractQueryHandler"]] = {
     queries.AllPublications: RetrieveAllPublicationsHandler,
+    queries.PublicationByUuid: RetrievePublicationByUuid,
     queries.AuthorByUuid: RetrieveAuthorByUuid,
     queries.AllAuthors: RetrieveAllAuthors,
     queries.SeriesByUuid: RetrieveSeriesByUuid

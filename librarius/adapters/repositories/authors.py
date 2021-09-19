@@ -18,3 +18,6 @@ class AuthorsRepository(AbstractRepository):
     def find(self):
         pass
         #return self.context.query(query_object)
+
+    def find_by_uuid(self, uuid):
+        pass

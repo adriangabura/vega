@@ -27,3 +27,13 @@ class PublicationAlreadyExists(AbstractMessageUnprocessable):
     def __init__(self, message: 'AbstractMessage'):
         super().__init__(message)
         self.uuid = message.uuid
+
+
+class AuthorNotFound(AbstractMessageUnprocessable):
+    """
+    This exception is raised when we try to perform an action on an author that doesn't exist.
+    """
+
+    def __init__(self, message: 'AbstractMessage'):
+        super().__init__(message)
+        self.uuid = message.uuid

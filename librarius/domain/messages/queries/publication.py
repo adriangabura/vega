@@ -8,5 +8,5 @@ class AllPublications(AbstractQuery['AllPublications']):
 
 
 @dataclasses.dataclass
-class AddPublication(AbstractQuery['AddPublication']):
-    title: str
+class PublicationByUuid(AbstractQuery['AllPublications']):
+    publication_uuid: str

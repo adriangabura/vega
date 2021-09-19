@@ -4,8 +4,10 @@ from librarius.service_layer.handlers import AbstractCommandHandler
 from librarius.domain.messages import commands
 from librarius.domain import models
 from librarius.service_layer import ensure
+from librarius.service_layer.ensure import exceptions
 
 if tp.TYPE_CHECKING:
+    from sqlalchemy.orm import Session
     from librarius.domain.messages import AbstractCommand
 
 logger = logging.getLogger(__name__)
@@ -31,9 +33,23 @@ class CreateSeriesHandler(AbstractCommandHandler[commands.CreateSeries]):
 
 class AddAuthorToPublicationHandler(AbstractCommandHandler[commands.AddAuthorToPublication]):
     def __call__(self, cmd: 'commands.AddAuthorToPublication'):
-        author = models.Author(uuid=cmd.author_uuid, name=cmd.author_name)
+        #author = models.Author(uuid=cmd.author_uuid, name=cmd.author_name)
         with self.uow as uow_context:
             ensure.publication_exists(cmd, uow_context)
+
+        try:
+            with self.uow as uow_context:
+                ensure.author_exists(cmd, uow_context)
+        except exceptions.AuthorNotFound as error:
+            logger.exception(error)
+            create_author = CreateAuthorHandler(self.uow)
+            create_author(commands.CreateAuthor(name=cmd.author_name, author_uuid=cmd.author_uuid))
+        with self.uow as uow_context:
+            session: 'Session' = self.uow.context.session
+            author = session.query(models.Author).filter_by(uuid=cmd.author_uuid).first()
+            publication = session.query(models.Publication).filter_by(uuid=cmd.publication_uuid).first()
+            publication.add_author(author)
+            self.uow.commit()
 
 
 class AddPublicationHandler(AbstractCommandHandler[commands.AddPublication]):

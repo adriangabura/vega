@@ -19,3 +19,11 @@ def author_not_exists_skip(message: 'AbstractMessage', uow_context: 'AbstractUni
 
     if author:
         raise SkipMessage(f"Author with uuid {message.author_uuid} and name {message.name} exists")
+
+
+def author_exists(message: 'AbstractMessage', uow_context: 'AbstractUnitOfWork'):
+    session: 'Session' = uow_context.context.session
+    author: 'Author' = session.query(Author).filter_by(uuid=message.author_uuid, name=message.author_name).first()
+
+    if not author:
+        raise exceptions.AuthorNotFound(message)

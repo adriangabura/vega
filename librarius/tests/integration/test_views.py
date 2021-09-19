@@ -32,39 +32,35 @@ def sqlite_bus(sql_alchemy_context_factory: "SQLAlchemyContextMaker"):
     clear_mappers()
 
 
-def test_create_author(sqlite_bus: "MessageBus"):
+def test_create_publication_and_add_author(sqlite_bus: "MessageBus"):
+    publication_uuid = str(uuid4())
+
+    sqlite_bus.handle(commands.AddPublication(publication_uuid=publication_uuid, title="Test Publication Title"))
+
     author_uuid = str(uuid4())
 
-    sqlite_bus.handle(commands.CreateAuthor(author_uuid=author_uuid, name="Author Name"))
-    result: "models.Author" = sqlite_bus.handle(queries.AuthorByUuid(author_uuid))
-    assert result.uuid == author_uuid
+    sqlite_bus.handle(commands.AddAuthorToPublication(
+        publication_uuid=publication_uuid, author_uuid=author_uuid, author_name="Test Author Name"))
+
+    publication: 'models.Publication' = sqlite_bus.handle(queries.PublicationByUuid(publication_uuid=publication_uuid))
+
+    publication_authors_uuid = [author.uuid for author in publication.authors]
+
+    assert author_uuid in publication_authors_uuid
 
 
-def test_create_series(sqlite_bus: "MessageBus"):
-    series_uuid = str(uuid4())
-
-    sqlite_bus.handle(commands.CreateSeries(series_uuid=series_uuid, name="Series Name"))
-    result: 'models.Series' = sqlite_bus.handle(queries.SeriesByUuid(series_uuid))
-    assert result.uuid == series_uuid
-
-# def test_add_publication_author_series(sqlite_bus: "MessageBus"):
-#     publication_uuid = str(uuid4())
+# def test_create_author(sqlite_bus: "MessageBus"):
+#     author_uuid = str(uuid4())
 #
-#     sqlite_bus.handle(commands.AddPublication(publication_uuid=publication_uuid, title="Test Publication"))
-
-
-
-
-# def test_handle_view(sqlite_bus: "MessageBus"):
-#     logger = logging.getLogger(__name__)
-#     publication_uuid = str(uuid4())
-#     publication_uuid2 = str(uuid4())
-#     logger.info(publication_uuid)
+#     sqlite_bus.handle(commands.CreateAuthor(author_uuid=author_uuid, name="Author Name"))
+#     result: "models.Author" = sqlite_bus.handle(queries.AuthorByUuid(author_uuid))
+#     assert result.uuid == author_uuid
 #
 #
-#     sqlite_bus.handle(commands.AddPublication(title="cerbulan", publication_uuid=publication_uuid))
-#     sqlite_bus.handle(commands.AddPublication(title="cerbulan", publication_uuid=publication_uuid))
-#     results = sqlite_bus.handle(queries.AllPublications())
+# def test_create_series(sqlite_bus: "MessageBus"):
+#     series_uuid = str(uuid4())
 #
-#     logger.info(f'results: {results}')
+#     sqlite_bus.handle(commands.CreateSeries(series_uuid=series_uuid, name="Series Name"))
+#     result: 'models.Series' = sqlite_bus.handle(queries.SeriesByUuid(series_uuid))
+#     assert result.uuid == series_uuid
 
