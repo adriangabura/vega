@@ -25,6 +25,8 @@ from datetime import datetime, date
 def uuid_factory(value: UUID) -> UUID:
     if isinstance(value, UUID):
         return value
+    elif isinstance(value, str):
+        return value
     else:
         return uuid4()
 

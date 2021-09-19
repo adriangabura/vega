@@ -28,11 +28,18 @@ def sqlite_bus(sql_alchemy_context_factory: "SQLAlchemyContextMaker"):
     yield bus
     clear_mappers()
 
-
+from librarius.service_layer.ensure import exceptions
 def test_handle_view(sqlite_bus: "MessageBus"):
-    publication_uuid = str(uuid4())
-
-    sqlite_bus.handle(commands.AddPublication("cerbulan", publication_uuid))
-    results = sqlite_bus.handle(queries.AllPublications())
     logger = logging.getLogger(__name__)
-    logger.info(f'results: {results}')
+    publication_uuid = str(uuid4())
+    publication_uuid2 = str(uuid4())
+    logger.info(publication_uuid)
+
+    try:
+        sqlite_bus.handle(commands.AddPublication(title="cerbulan", uuid=publication_uuid))
+        sqlite_bus.handle(commands.AddPublication(title="cerbulan", uuid=publication_uuid))
+        results = sqlite_bus.handle(queries.AllPublications())
+
+        logger.info(f'results: {results}')
+    except exceptions.PublicationAlreadyExists as error:
+        logger.error(error)

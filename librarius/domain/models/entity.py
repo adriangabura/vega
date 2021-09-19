@@ -17,7 +17,7 @@ class Entity:
         else:
             raise KeyError
 
-    def _get_repr_attribute(self, attribute: str) -> tp.Union[str, bool]:
+    def _get_repr_attribute(self, attribute: str) -> tp.Optional[str]:
         value = self.__dict__.get(attribute)
         return f"{attribute}={value}" if value is not None else None
 
@@ -34,4 +34,4 @@ class Entity:
 
     def __repr__(self) -> str:
         attributes = [self._get_repr_attribute(attribute) for attribute in self._repr_attributes if self._get_repr_attribute(attribute) is not None]
-        return f"{self.__class__.__name__}({', '.join(attributes)})"
+        return f"{self.__class__.__name__}({', '.join(attributes)})" # To check the above

@@ -2,6 +2,7 @@ import logging
 import typing as tp
 from librarius.domain.messages import AbstractMessage, AbstractEvent, AbstractCommand, AbstractQuery
 from librarius.service_layer.uow import AbstractUnitOfWork
+from librarius.domain.exceptions import SkipMessage
 
 logger = logging.getLogger(__name__)
 
@@ -23,16 +24,19 @@ class MessageBus:
     def handle(self, message: AbstractMessage):
         self.queue.append(message)
 
-        while self.queue:
-            message = self.queue.pop(0)
-            if isinstance(message, AbstractEvent):
-                self.handle_event(message)
-            elif isinstance(message, AbstractCommand):
-                self.handle_command(message)
-            elif isinstance(message, AbstractQuery):
-                return self.handle_query(message)
-            else:
-                raise Exception(f"{message} was not an Event, Command or Query")
+        try:
+            while self.queue:
+                message = self.queue.pop(0)
+                if isinstance(message, AbstractEvent):
+                    self.handle_event(message)
+                elif isinstance(message, AbstractCommand):
+                    self.handle_command(message)
+                elif isinstance(message, AbstractQuery):
+                    return self.handle_query(message)
+                else:
+                    raise Exception(f"{message} was not an Event, Command or Query")
+        except SkipMessage as error:
+            logger.warning(f'Skipping message {"some"} because {error.reason}')
 
     def handle_event(self, event: AbstractEvent) -> None:
         for handler in self.event_handlers[type(event)]:
