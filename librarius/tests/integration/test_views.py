@@ -18,6 +18,7 @@ if tp.TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
+
 @pytest.fixture
 def sqlite_bus(sql_alchemy_context_factory: "SQLAlchemyContextMaker"):
     bus = bootstrap.bootstrap(
@@ -32,12 +33,32 @@ def sqlite_bus(sql_alchemy_context_factory: "SQLAlchemyContextMaker"):
     clear_mappers()
 
 
-def test_create_publication_and_add_author(sqlite_bus: "MessageBus"):
-    publication_uuid = str(uuid4())
+@pytest.fixture(scope='module')
+def generate_uuids():
+    class IdGen:
+        def __init__(self):
+            self.publication1 = str(uuid4())
+            self.publication2 = str(uuid4())
+            self.author1 = str(uuid4())
+            self.author2 = str(uuid4())
+            self.series1 = str(uuid4())
+            self.series2 = str(uuid4())
 
+    return IdGen()
+
+
+def test_create_publication(sqlite_bus: "MessageBus", generate_uuids):
+    publication_uuid = generate_uuids.publication1
     sqlite_bus.handle(commands.AddPublication(publication_uuid=publication_uuid, title="Test Publication Title"))
+    result: 'models.Publication' = sqlite_bus.handle(queries.PublicationByUuid(publication_uuid))
 
-    author_uuid = str(uuid4())
+    assert publication_uuid == result.uuid
+
+
+def test_add_author_to_publication(sqlite_bus: "MessageBus", generate_uuids):
+
+    author_uuid = generate_uuids.author1
+    publication_uuid = generate_uuids.publication1
 
     sqlite_bus.handle(commands.AddAuthorToPublication(
         publication_uuid=publication_uuid, author_uuid=author_uuid, author_name="Test Author Name"))
@@ -47,6 +68,7 @@ def test_create_publication_and_add_author(sqlite_bus: "MessageBus"):
     publication_authors_uuid = [author.uuid for author in publication.authors]
 
     assert author_uuid in publication_authors_uuid
+
 
 
 # def test_create_author(sqlite_bus: "MessageBus"):
