@@ -3,9 +3,19 @@ This module contains preconditions that we apply to our handlers.
 """
 
 import typing as tp
-from librarius.service_layer.ensure.abstract import AbstractMessageUnprocessable
+from librarius.service_layer.ensure import exceptions
+from librarius.domain.models import Author
+from librarius.domain.exceptions import SkipMessage
 
 if tp.TYPE_CHECKING:
+    from sqlalchemy.orm import Session
     from librarius.service_layer.uow import AbstractUnitOfWork
+    from librarius.domain.messages import AbstractMessage
 
 
+def author_not_exists_skip(message: 'AbstractMessage', uow_context: 'AbstractUnitOfWork') -> None:
+    session: 'Session' = uow_context.context.session
+    author: 'Author' = session.query(Author).filter_by(uuid=message.author_uuid, name=message.name).first()
+
+    if author:
+        raise SkipMessage(f"Author with uuid {message.author_uuid} and name {message.name} exists")

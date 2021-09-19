@@ -1,18 +1,20 @@
+import typing as tp
 import dataclasses
+from uuid import UUID
 from librarius.domain.messages import AbstractCommand
 
 
 @dataclasses.dataclass
 class AddPublication(AbstractCommand['AddPublication']):
+    publication_uuid: str
     title: str
-    uuid: str
 
 
 @dataclasses.dataclass
 class AddAuthorToPublication(AbstractCommand['AddAuthorToPublication']):
     publication_uuid: str
     author_uuid: str
-    author_title: str
+    author_name: str
 
 
 @dataclasses.dataclass

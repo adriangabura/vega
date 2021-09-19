@@ -36,7 +36,7 @@ class MessageBus:
                 else:
                     raise Exception(f"{message} was not an Event, Command or Query")
         except SkipMessage as error:
-            logger.warning(f'Skipping message {"some"} because {error.reason}')
+            logger.warning(f'Skipping message {message.uuid} because {error.reason}')
 
     def handle_event(self, event: AbstractEvent) -> None:
         for handler in self.event_handlers[type(event)]:

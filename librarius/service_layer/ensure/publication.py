@@ -14,7 +14,7 @@ if tp.TYPE_CHECKING:
 
 def publication_exists(message: 'AbstractMessage', uow_context: 'AbstractUnitOfWork') -> None:
     session: 'Session' = uow_context.context.session
-    publication: 'Publication' = session.query(Publication).filter_by(uuid=message.uuid)
+    publication: 'Publication' = session.query(Publication).filter_by(uuid=message.publication_uuid)
 
     if publication is None:
         raise exceptions.PublicationNotFound(message)
@@ -22,7 +22,14 @@ def publication_exists(message: 'AbstractMessage', uow_context: 'AbstractUnitOfW
 
 def publication_not_exists(message: 'AbstractMessage', uow_context: 'AbstractUnitOfWork') -> None:
     session: 'Session' = uow_context.context.session
-    publication: 'Publication' = session.query(Publication).filter_by(uuid=message.uuid).first()
+    publication: 'Publication' = session.query(Publication).filter_by(uuid=message.publication_uuid).first()
 
     if publication:
         raise exceptions.PublicationAlreadyExists(message)
+
+def publication_skip_exists(message: 'AbstractMessage', uow_context: 'AbstractUnitOfWork') -> None:
+    session: 'Session' = uow_context.context.session
+    publication: 'Publication' = session.query(Publication).filter_by(uuid=message.publication_uuid).first()
+    from librarius.domain.exceptions import SkipMessage
+    if publication:
+        raise SkipMessage(f"Publication with uuid {message.publication_uuid} exists")

@@ -4,8 +4,14 @@ from librarius.domain.messages import AbstractCommand
 
 
 @dataclasses.dataclass
+class CreateAuthor(AbstractCommand['CreateAuthor']):
+    name: str
+    author_uuid: str
+
+
+@dataclasses.dataclass
 class AuthorBaseCommand(AbstractCommand['AuthorBaseCommand']):
-    uuid: str
+    pass
 
 
 @dataclasses.dataclass

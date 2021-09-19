@@ -11,18 +11,28 @@ if tp.TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
+class CreateAuthorHandler(AbstractCommandHandler[commands.CreateAuthor]):
+    def __call__(self, cmd: 'commands.CreateAuthor'):
+        author = models.Author(uuid=cmd.author_uuid, name=cmd.name)
+        with self.uow as uow_context:
+            ensure.author_not_exists_skip(cmd, uow_context)
+            self.uow.repositories.authors.add(author)
+            self.uow.commit()
+
+
 class AddAuthorToPublicationHandler(AbstractCommandHandler[commands.AddAuthorToPublication]):
     def __call__(self, cmd: 'commands.AddAuthorToPublication'):
-        with self.uow as uow:
-            pass
+        author = models.Author(uuid=cmd.author_uuid, name=cmd.author_name)
+        with self.uow as uow_context:
+            ensure.publication_exists(cmd, uow_context)
 
 
 class AddPublicationHandler(AbstractCommandHandler[commands.AddPublication]):
     def __call__(self, cmd: 'commands.AddPublication'):
-        publication = models.Publication(title=cmd.title, uuid=cmd.uuid)
+        publication = models.Publication(title=cmd.title, uuid=cmd.publication_uuid)
         with self.uow as uow_context:
-            ensure.publication_not_exists(cmd, uow_context)
-            
+            #ensure.publication_not_exists(cmd, uow_context)
+            ensure.publication.publication_skip_exists(cmd, uow_context)
             publication.add_publication()
             uow_context.repositories.publications.add(publication)
             uow_context.commit()
@@ -34,6 +44,7 @@ class RemovePublicationHandler(AbstractCommandHandler[commands.RemovePublication
 
 
 COMMAND_HANDLERS: tp.Mapping[tp.Type["AbstractCommand"], tp.Type["AbstractCommandHandler"]] = {
+    commands.CreateAuthor: CreateAuthorHandler,
     commands.AddPublication: AddPublicationHandler,
     commands.RemovePublication: RemovePublicationHandler,
     commands.AddAuthorToPublication: AddAuthorToPublicationHandler
