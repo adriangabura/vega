@@ -20,6 +20,15 @@ class CreateAuthorHandler(AbstractCommandHandler[commands.CreateAuthor]):
             self.uow.commit()
 
 
+class CreateSeriesHandler(AbstractCommandHandler[commands.CreateSeries]):
+    def __call__(self, cmd: 'commands.CreateSeries'):
+        series = models.Series(uuid=cmd.series_uuid, name=cmd.name)
+        with self.uow as uow_context:
+            ensure.series_not_exists_skip(cmd, uow_context)
+            self.uow.repositories.series.add(series)
+            self.uow.commit()
+
+
 class AddAuthorToPublicationHandler(AbstractCommandHandler[commands.AddAuthorToPublication]):
     def __call__(self, cmd: 'commands.AddAuthorToPublication'):
         author = models.Author(uuid=cmd.author_uuid, name=cmd.author_name)
@@ -47,5 +56,6 @@ COMMAND_HANDLERS: tp.Mapping[tp.Type["AbstractCommand"], tp.Type["AbstractComman
     commands.CreateAuthor: CreateAuthorHandler,
     commands.AddPublication: AddPublicationHandler,
     commands.RemovePublication: RemovePublicationHandler,
-    commands.AddAuthorToPublication: AddAuthorToPublicationHandler
+    commands.AddAuthorToPublication: AddAuthorToPublicationHandler,
+    commands.CreateSeries: CreateSeriesHandler
 }

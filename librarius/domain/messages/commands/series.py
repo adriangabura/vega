@@ -3,6 +3,12 @@ from librarius.domain.messages import AbstractCommand
 
 
 @dataclasses.dataclass
+class CreateSeries(AbstractCommand['CreateSeries']):
+    series_uuid: str
+    name: str
+
+
+@dataclasses.dataclass
 class AddSeries(AbstractCommand['AddSeries']):
     pass
 

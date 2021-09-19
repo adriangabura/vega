@@ -40,6 +40,13 @@ def test_create_author(sqlite_bus: "MessageBus"):
     assert result.uuid == author_uuid
 
 
+def test_create_series(sqlite_bus: "MessageBus"):
+    series_uuid = str(uuid4())
+
+    sqlite_bus.handle(commands.CreateSeries(series_uuid=series_uuid, name="Series Name"))
+    result: 'models.Series' = sqlite_bus.handle(queries.SeriesByUuid(series_uuid))
+    assert result.uuid == series_uuid
+
 # def test_add_publication_author_series(sqlite_bus: "MessageBus"):
 #     publication_uuid = str(uuid4())
 #

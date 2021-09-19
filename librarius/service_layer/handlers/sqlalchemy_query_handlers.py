@@ -1,7 +1,7 @@
 import typing as tp
 import logging
 
-from librarius.domain.models import Publication, Author
+from librarius.domain.models import Publication, Author, Series
 from librarius.domain.messages import queries, AbstractQuery
 from librarius.service_layer.handlers import AbstractQueryHandler
 from librarius.service_layer.uow import SQLAlchemyUnitOfWork
@@ -36,7 +36,27 @@ class RetrieveAuthorByUuid(AbstractQueryHandler[queries.AuthorByUuid]):
             return result
 
 
+class RetrieveAllAuthors(AbstractQueryHandler[queries.AllAuthors]):
+    def __call__(self, query: 'queries.AllAuthors'):
+        with self.uow as uow_context:
+            session: 'Session' = self.uow.context.session
+            result: list["Author"] = session.query(Author).all()
+            session.expunge_all()
+            return result
+
+
+class RetrieveSeriesByUuid(AbstractQueryHandler[queries.SeriesByUuid]):
+    def __call__(self, query: 'queries.SeriesByUuid'):
+        with self.uow as uow_context:
+            session: 'Session' = self.uow.context.session
+            result: "Series" = session.query(Series).filter_by(uuid=query.series_uuid).first()
+            session.expunge_all()
+            return result
+
+
 QUERY_HANDLERS: tp.Mapping[tp.Type['AbstractQuery'], tp.Type["AbstractQueryHandler"]] = {
     queries.AllPublications: RetrieveAllPublicationsHandler,
-    queries.AuthorByUuid: RetrieveAuthorByUuid
+    queries.AuthorByUuid: RetrieveAuthorByUuid,
+    queries.AllAuthors: RetrieveAllAuthors,
+    queries.SeriesByUuid: RetrieveSeriesByUuid
 }
