@@ -16,9 +16,15 @@ class AuthorAddedHandler(AbstractEventHandler[events.AuthorAdded]):
         logger.info('Author added')
 
 
+class PublicationAddedToSeriesHandler(AbstractEventHandler[events.PublicationAddedToSeries]):
+    def __call__(self, event: 'events.PublicationAddedToSeries'):
+        logger.info('Publication added to series')
+
+
 EVENT_HANDLERS: tp.Mapping[tp.Type["AbstractEvent"], tp.Sequence[tp.Type[AbstractEventHandler]]] = {
     events.PublicationAdded: [PublicationAddedHandler],
     events.PublicationModified: [],
     events.PublicationRemoved: [],
-    events.AuthorAdded: [AuthorAddedHandler]
+    events.AuthorAdded: [AuthorAddedHandler],
+    events.PublicationAddedToSeries: [PublicationAddedToSeriesHandler]
 }

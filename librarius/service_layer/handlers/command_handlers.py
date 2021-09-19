@@ -24,7 +24,7 @@ class CreateAuthorHandler(AbstractCommandHandler[commands.CreateAuthor]):
 
 class CreateSeriesHandler(AbstractCommandHandler[commands.CreateSeries]):
     def __call__(self, cmd: 'commands.CreateSeries'):
-        series = models.Series(uuid=cmd.series_uuid, name=cmd.name)
+        series = models.Series(uuid=cmd.series_uuid, name=cmd.series_name)
         with self.uow as uow_context:
             ensure.series_not_exists_skip(cmd, uow_context)
             self.uow.repositories.series.add(series)
@@ -68,10 +68,31 @@ class RemovePublicationHandler(AbstractCommandHandler[commands.RemovePublication
         pass
 
 
+class AddPublicationToSeriesHandler(AbstractCommandHandler[commands.AddPublicationToSeries]):
+    def __call__(self, cmd: 'commands.AddPublicationToSeries'):
+        with self.uow as uow_context:
+            ensure.publication_exists(cmd, uow_context)
+
+        try:
+            with self.uow as uow_context:
+                ensure.series_exists(cmd, uow_context)
+        except exceptions.SeriesNotFound as error:
+            logger.exception(error)
+            create_series = CreateSeriesHandler(self.uow)
+            create_series(commands.CreateSeries(cmd.series_uuid, cmd.series_name))
+        with self.uow as uow_context:
+            session: 'Session' = self.uow.context.session
+            publication = session.query(models.Publication).filter_by(uuid=cmd.publication_uuid).first()
+            series = session.query(models.Series).filter_by(uuid=cmd.series_uuid).first()
+            series.add_publication(publication)
+            self.uow.commit()
+
+
 COMMAND_HANDLERS: tp.Mapping[tp.Type["AbstractCommand"], tp.Type["AbstractCommandHandler"]] = {
     commands.CreateAuthor: CreateAuthorHandler,
     commands.AddPublication: AddPublicationHandler,
     commands.RemovePublication: RemovePublicationHandler,
     commands.AddAuthorToPublication: AddAuthorToPublicationHandler,
-    commands.CreateSeries: CreateSeriesHandler
+    commands.CreateSeries: CreateSeriesHandler,
+    commands.AddPublicationToSeries: AddPublicationToSeriesHandler
 }
