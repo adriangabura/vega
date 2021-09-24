@@ -2,9 +2,8 @@ import typing as tp
 from librarius.service_layer.uow import AbstractUnitOfWork
 from librarius.adapters.utils import DEFAULT_REPOSITORY_CONTEXT_FACTORY, DEFAULT_REPOSITORY_FACTORY
 
-
 if tp.TYPE_CHECKING:
-    #from librarius.service_layer.uow.abstract import TAbstractUnitOfWork
+    # from librarius.service_layer.uow.abstract import TAbstractUnitOfWork
     from librarius.adapters.repositories.abstract import AbstractRepository
     from librarius.adapters.repositories.contexts import AbstractContextMaker
     from librarius.adapters.repositories.contexts import AbstractRepositoryContext
@@ -14,7 +13,7 @@ if tp.TYPE_CHECKING:
 
 class SQLAlchemyUnitOfWork(AbstractUnitOfWork["SQLAlchemyUnitOfWork"]):
     def __init__(self,
-                 repository_factory = DEFAULT_REPOSITORY_FACTORY,
+                 repository_factory=DEFAULT_REPOSITORY_FACTORY,
                  context_factory: "AbstractContextMaker" = DEFAULT_REPOSITORY_CONTEXT_FACTORY):
         self.repository_factory: tp.Type[DefaultRepositoryCollection] = repository_factory
         self.context_factory = context_factory
@@ -39,4 +38,4 @@ class SQLAlchemyUnitOfWork(AbstractUnitOfWork["SQLAlchemyUnitOfWork"]):
         for repo_name in repos:
             for elem in repos[repo_name].seen:
                 while elem.events:
-                    yield elem.events.pop(0)
+                    yield elem.events.popleft()  # yield elem.events.pop(0)

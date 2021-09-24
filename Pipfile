@@ -5,7 +5,7 @@ name = "pypi"
 
 [packages]
 pydantic = {extras = ["dotenv"], version = "*"}
-sqlalchemy = "~=1.4.23"
+sqlalchemy = {version = "~=1.4.25", extras = ["mypy"]}
 
 [dev-packages]
 pytest = "*"
@@ -13,3 +13,6 @@ mypy = "*"
 
 [requires]
 python_version = "3.9"
+
+[pipenv]
+allow_prereleases = true
