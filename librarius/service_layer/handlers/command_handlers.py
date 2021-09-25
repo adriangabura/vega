@@ -41,7 +41,7 @@ class AddAuthorToPublicationHandler(AbstractCommandHandler[commands.AddAuthorToP
             with self.uow as uow_context:
                 ensure.author_exists(cmd, uow_context)
         except exceptions.AuthorNotFound as error:
-            logger.exception(error)
+            logger.warning(f'Author with uuid {error.uuid} not found.')
             create_author = CreateAuthorHandler(self.uow)
             create_author(commands.CreateAuthor(name=cmd.author_name, author_uuid=cmd.author_uuid))
         with self.uow as uow_context:
@@ -77,7 +77,7 @@ class AddPublicationToSeriesHandler(AbstractCommandHandler[commands.AddPublicati
             with self.uow as uow_context:
                 ensure.series_exists(cmd, uow_context)
         except exceptions.SeriesNotFound as error:
-            logger.exception(error)
+            logger.warning(f'Series with uuid {error.uuid} not found.')
             create_series = CreateSeriesHandler(self.uow)
             create_series(commands.CreateSeries(cmd.series_uuid, cmd.series_name))
         with self.uow as uow_context:
