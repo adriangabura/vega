@@ -9,6 +9,8 @@ if tp.TYPE_CHECKING:
 
 class Series(Entity):
     _repr_attributes = ['uuid', 'date_added', 'date_modified', 'name', 'publications', 'authors']
+    publications: list["Publication"]
+    authors: list["Author"]
 
     def __init__(
             self,

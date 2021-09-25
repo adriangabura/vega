@@ -106,17 +106,15 @@ def start_mappers():
 @event.listens_for(models.Author, 'load')
 def load_author(target: models.Author, context: QueryContext):
     target.events = []
-    target.publications
 
 
 @event.listens_for(models.Series, 'load')
 def load_series(target: models.Series, context: QueryContext):
     target.events = []
-    target.authors
     target.publications
 
 
 @event.listens_for(models.Publication, 'load')
 def load_publication(target: models.Publication, context: QueryContext):
     target.events = []
-    target.authors
+

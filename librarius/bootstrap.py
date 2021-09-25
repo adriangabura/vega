@@ -5,7 +5,6 @@ from librarius.adapters.notifications import MemoryNotification
 from librarius.service_layer import handlers, message_bus, uow as uow_package
 
 if tp.TYPE_CHECKING:
-    from librarius.types import Message, Handler
     from librarius.service_layer import AbstractUnitOfWork
     from librarius.adapters.notifications import AbstractNotification
     from librarius.domain.messages import AbstractCommand, AbstractEvent, AbstractQuery, AbstractMessage
@@ -17,7 +16,7 @@ def inject_dependencies(handler_type: tp.Type['AbstractHandler'], input_dependen
     dependencies: dict[str, tp.Union[tp.Callable, tp.Type]] = {
         name: dependency for name, dependency in input_dependencies.items() if name in params}
 
-    def handler_with_injections(message: "AbstractMessage") -> tp.Callable[["AbstractMessage"], "Handler"]:
+    def handler_with_injections(message: "AbstractMessage") -> tp.Callable[["AbstractMessage"], "AbstractHandler"]:
         return handler_type(**dependencies)(message)
 
     return handler_with_injections

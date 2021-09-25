@@ -10,6 +10,8 @@ if tp.TYPE_CHECKING:
 class Publication(Entity):
     _repr_attributes = ['uuid', 'date_added', 'date_modified', 'date_published', 'title', 'authors']
 
+    authors: list["Author"]
+
     def __init__(
             self,
             uuid: str = None,

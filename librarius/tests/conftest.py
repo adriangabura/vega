@@ -7,6 +7,7 @@ from sqlalchemy.orm import sessionmaker, clear_mappers
 from librarius.adapters.orm import metadata, start_mappers
 from librarius.adapters.repositories.contexts.sqlalchemy_implementation import SQLAlchemyContextMaker
 
+
 @pytest.fixture(scope="session")
 def in_memory_sqlite_db():
     engine = create_engine("sqlite:///:memory:")

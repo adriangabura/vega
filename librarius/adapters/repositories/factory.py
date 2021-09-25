@@ -46,9 +46,3 @@ class DefaultRepositoryCollection(AbstractRepositoryCollection['DefaultRepositor
 
     def _asdict(self) -> dict[str, AbstractRepository]:
         return {i.name: self.__dict__[i.name] for i in fields(self)}
-
-# from librarius.adapters.repositories.contexts import MemoryRepositoryContext
-# cont = MemoryRepositoryContext()
-#
-# burb = DefaultRepositoryCollection(cont)
-# print(fields(burb))

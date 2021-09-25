@@ -11,7 +11,7 @@ TAbstractRepository = tp.TypeVar('TAbstractRepository', bound='AbstractRepositor
 
 
 class AbstractRepository(abc.ABC, tp.Generic[TAbstractRepository, TAbstractRepositoryContext]):
-    name: tp.ClassVar[str] = "abstract.py"
+    name: tp.ClassVar[str] = "abstract"
 
     def __init__(self, context: "TAbstractRepositoryContext"):
         self.context = context
