@@ -12,7 +12,7 @@ if tp.TYPE_CHECKING:
     from librarius.service_layer.handlers import AbstractHandler, TAbstractHandler
 
 
-def inject_dependencies(handler_type: 'TAbstractHandler', input_dependencies: dict) -> tp.Callable:
+def inject_dependencies(handler_type: tp.Type['AbstractHandler'], input_dependencies: dict) -> tp.Callable:
     params = inspect.signature(handler_type).parameters
     dependencies: dict[str, tp.Union[tp.Callable, tp.Type]] = {
         name: dependency for name, dependency in input_dependencies.items() if name in params}

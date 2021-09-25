@@ -4,8 +4,8 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-pydantic = {extras = ["dotenv"], version = "*"}
 sqlalchemy = {version = "~=1.4.25", extras = ["mypy"]}
+python-dotenv = "~=0.19"
 
 [dev-packages]
 pytest = "*"
