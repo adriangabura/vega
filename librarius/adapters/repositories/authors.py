@@ -14,6 +14,7 @@ class AuthorsRepository(AbstractRepository):
 
     def remove(self, author: "Author") -> None:
         self.context.remove(author)
+        self.seen.add(author)
 
     def find(self):
         pass
