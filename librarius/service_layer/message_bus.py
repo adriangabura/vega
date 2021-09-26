@@ -1,5 +1,6 @@
 import logging
 import typing as tp
+from collections import deque
 from librarius.domain.messages import AbstractMessage, AbstractEvent, AbstractCommand, AbstractQuery
 from librarius.service_layer.uow import AbstractUnitOfWork
 from librarius.domain.exceptions import SkipMessage
@@ -15,7 +16,7 @@ class MessageBus:
             command_handlers: dict[tp.Type[AbstractCommand], tp.Callable],
             query_handlers: dict[tp.Type[AbstractQuery], tp.Callable]
     ):
-        self.queue: list[AbstractMessage] = []
+        self.queue: deque[AbstractMessage] = deque()
         self.uow = uow
         self.event_handlers = event_handlers
         self.command_handlers = command_handlers
@@ -26,7 +27,7 @@ class MessageBus:
 
         try:
             while self.queue:
-                message = self.queue.pop(0)
+                message = self.queue.popleft()
                 if isinstance(message, AbstractEvent):
                     self.handle_event(message)
                 elif isinstance(message, AbstractCommand):
