@@ -3,9 +3,6 @@ import typing as tp
 
 from librarius.adapters.repositories.contexts import TAbstractRepositoryContext
 
-if tp.TYPE_CHECKING:
-    from librarius.utils import Map
-
 
 TAbstractRepository = tp.TypeVar('TAbstractRepository', bound='AbstractRepository')
 
@@ -27,4 +24,4 @@ class AbstractRepository(abc.ABC, tp.Generic[TAbstractRepository, TAbstractRepos
 
     @abc.abstractmethod
     def find(self):
-        pass
+        raise NotImplementedError

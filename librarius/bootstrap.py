@@ -24,7 +24,7 @@ def inject_dependencies(handler_type: tp.Type['AbstractHandler'], input_dependen
 
 def bootstrap(
         start_orm: bool = True,
-        uow: "AbstractUnitOfWork" = uow_package.SQLAlchemyUnitOfWork(),
+        uow: "AbstractUnitOfWork" = uow_package.GenericUnitOfWork(),
         notifications: "AbstractNotification" = None,
         publish: tp.Callable = redis_eventpublisher.publish
 ) -> message_bus.MessageBus:

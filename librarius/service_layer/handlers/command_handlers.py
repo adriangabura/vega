@@ -33,7 +33,6 @@ class CreateSeriesHandler(AbstractCommandHandler[commands.CreateSeries]):
 
 class AddAuthorToPublicationHandler(AbstractCommandHandler[commands.AddAuthorToPublication]):
     def __call__(self, cmd: 'commands.AddAuthorToPublication'):
-        #author = models.Author(uuid=cmd.author_uuid, name=cmd.author_name)
         with self.uow as uow_context:
             ensure.publication_exists(cmd, uow_context)
 

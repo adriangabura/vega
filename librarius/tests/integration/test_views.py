@@ -7,7 +7,7 @@ import logging
 from sqlalchemy.orm import clear_mappers
 
 from librarius import bootstrap
-from librarius.service_layer.uow import SQLAlchemyUnitOfWork
+from librarius.service_layer.uow import GenericUnitOfWork
 from librarius.domain.messages import commands, queries
 from librarius.domain.exceptions import SkipMessage
 from librarius.domain import models
@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 def sqlite_bus(sql_alchemy_context_factory: "SQLAlchemyContextMaker"):
     bus = bootstrap.bootstrap(
         start_orm=True,
-        uow=SQLAlchemyUnitOfWork(
+        uow=GenericUnitOfWork(
             context_factory=sql_alchemy_context_factory,
         ),
         notifications=mock.Mock(),

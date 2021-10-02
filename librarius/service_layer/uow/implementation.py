@@ -11,14 +11,14 @@ if tp.TYPE_CHECKING:
     from librarius.adapters.repositories.factory import DefaultRepositoryCollection
 
 
-class SQLAlchemyUnitOfWork(AbstractUnitOfWork["SQLAlchemyUnitOfWork"]):
+class GenericUnitOfWork(AbstractUnitOfWork["GenericUnitOfWork"]):
     def __init__(self,
                  repository_factory=DEFAULT_REPOSITORY_FACTORY,
                  context_factory: "AbstractContextMaker" = DEFAULT_REPOSITORY_CONTEXT_FACTORY):
         self.repository_factory: tp.Type[DefaultRepositoryCollection] = repository_factory
         self.context_factory = context_factory
 
-    def __enter__(self, *args, **kwargs) -> "SQLAlchemyUnitOfWork":
+    def __enter__(self, *args, **kwargs) -> "GenericUnitOfWork":
         self.context: "AbstractRepositoryContext" = self.context_factory()
         self.repositories: DefaultRepositoryCollection = self.repository_factory(self.context)
         return self

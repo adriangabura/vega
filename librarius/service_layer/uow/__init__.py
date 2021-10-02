@@ -1,2 +1,2 @@
 from .abstract import AbstractUnitOfWork, TAbstractUnitOfWork
-from .implementation import SQLAlchemyUnitOfWork
+from .implementation import GenericUnitOfWork

@@ -5,7 +5,7 @@ import pytest
 from sqlalchemy import text
 
 from librarius.domain.models import Publication
-from librarius.service_layer.uow.implementation import SQLAlchemyUnitOfWork
+from librarius.service_layer.uow.implementation import GenericUnitOfWork
 
 if tp.TYPE_CHECKING:
     from sqlalchemy.orm import Session
@@ -42,7 +42,7 @@ def test_uow_can_retrieve_a_publication(sqlite_session_factory):
     insert_publications(session, pub_uuid, "Cerbulan Book", datetime.now(), datetime.now(), date.today())
     session.commit()
 
-    uow = SQLAlchemyUnitOfWork(sqlite_session_factory)
+    uow = GenericUnitOfWork(sqlite_session_factory)
 
 
     #with uow:
