@@ -36,6 +36,6 @@ class GenericUnitOfWork(AbstractUnitOfWork["GenericUnitOfWork"]):
     def collect_new_events(self) -> tp.Generator["AbstractEvent", None, None]:
         repos = self.repositories
         for repo_name in repos:
-            for elem in repos[repo_name].seen:
+            for elem in repos[repo_name].touched:
                 while elem.events:
                     yield elem.events.popleft()  # yield elem.events.pop(0)

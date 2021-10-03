@@ -1,8 +1,6 @@
 import typing as tp
+from librarius.domain.models import Series
 from librarius.adapters.repositories.abstract import AbstractRepository
-
-if tp.TYPE_CHECKING:
-    from librarius.domain.models import Series
 
 
 class SeriesRepository(AbstractRepository):
@@ -10,7 +8,7 @@ class SeriesRepository(AbstractRepository):
 
     def add(self, series: "Series") -> None:
         self.context.add(series)
-        self.seen.add(series)
+        self.touched.add(series)
 
     def remove(self, series: "Series") -> None:
         self.context.remove(series)
@@ -18,3 +16,6 @@ class SeriesRepository(AbstractRepository):
     def find(self):
         pass
         #return self.context.query(query_object)
+
+    def find_by_uuid(self, uuid: str) -> tp.Optional['Series']:
+        return self.context.session.query(Series).filter_by(uuid=uuid).first()

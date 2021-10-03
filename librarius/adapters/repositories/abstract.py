@@ -12,7 +12,7 @@ class AbstractRepository(abc.ABC, tp.Generic[TAbstractRepository, TAbstractRepos
 
     def __init__(self, context: "TAbstractRepositoryContext"):
         self.context = context
-        self.seen: set = set()
+        self.touched: set = set()
 
     @abc.abstractmethod
     def add(self, model):

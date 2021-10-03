@@ -5,7 +5,7 @@ from librarius.domain.messages import AbstractCommand
 
 
 @dataclasses.dataclass
-class AddPublication(AbstractCommand['AddPublication']):
+class CreatePublication(AbstractCommand['CreatePublication']):
     publication_uuid: str
     title: str
 

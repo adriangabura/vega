@@ -72,7 +72,9 @@ def start_mappers():
         models.Author,
         authors,
         properties={
-            "publications": relationship("Publication", secondary=publications_authors, back_populates="authors", lazy="joined")
+            "publications": relationship(
+                "Publication",
+                secondary=publications_authors, back_populates="authors", lazy="joined", collection_class=set)
         }
     )
 
@@ -81,7 +83,9 @@ def start_mappers():
         models.Publication,
         publications,
         properties={
-            "authors": relationship("Author", secondary=publications_authors, back_populates="publications", lazy="subquery")
+            "authors": relationship(
+                "Author",
+                secondary=publications_authors, back_populates="publications", lazy="subquery", collection_class=set)
         }
     )
 
@@ -90,7 +94,7 @@ def start_mappers():
         models.Series,
         series,
         properties={
-            "publications": relationship("Publication", secondary=series_publications),
+            "publications": relationship("Publication", secondary=series_publications, collection_class=set),
             "authors": relationship(
                 "Author",
                 secondary=join(series_publications, publications_authors,
@@ -98,7 +102,8 @@ def start_mappers():
                 primaryjoin=and_(series.columns.uuid == series_publications.columns.series_uuid,
                                  authors.columns.uuid == publications_authors.columns.author_uuid),
                 viewonly=True,
-                lazy="subquery"
+                lazy="subquery",
+                collection_class=set
             )
         })
 

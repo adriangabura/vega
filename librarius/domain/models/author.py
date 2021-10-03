@@ -10,7 +10,7 @@ if tp.TYPE_CHECKING:
 
 class Author(Entity):
     _repr_attributes = ['uuid', 'date_added', 'date_modified', 'name', 'publications']
-    publications: list["Publication"]
+    publications: set["Publication"]
 
     def __init__(
             self,
@@ -21,4 +21,4 @@ class Author(Entity):
     ) -> None:
         super().__init__(uuid=uuid, date_added=date_added, date_modified=date_modified)
         self.name: str = name
-        self.publications: list["Publication"] = []
+        self.publications: set["Publication"] = set()

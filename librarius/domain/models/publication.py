@@ -1,4 +1,5 @@
 import typing as tp
+import logging
 from datetime import datetime, date
 from librarius.domain.models import Entity, date_factory
 from librarius.domain.messages import events
@@ -6,11 +7,13 @@ from librarius.domain.messages import events
 if tp.TYPE_CHECKING:
     from librarius.domain.models.author import Author
 
+logger = logging.getLogger(__name__)
+
 
 class Publication(Entity):
     _repr_attributes = ['uuid', 'date_added', 'date_modified', 'date_published', 'title', 'authors']
 
-    authors: list["Author"]
+    authors: set["Author"]
 
     def __init__(
             self,
@@ -23,11 +26,11 @@ class Publication(Entity):
         super().__init__(uuid=uuid, date_added=date_added, date_modified=date_modified)
         self.date_published: date = date_factory(date_published)
         self.title: str = title
-        self.authors: list["Author"] = []
-
-    def add_publication(self) -> None:
-        self.events.append(events.PublicationAdded())
+        self.authors: set["Author"] = set()
 
     def add_author(self, author: 'Author'):
-        self.authors.append(author)
-        self.events.append(events.AuthorAdded())
+        if author not in self.authors:
+            self.authors.add(author)
+            self.events.append(events.AuthorAdded())
+        else:
+            logger.debug('Author already is assigned.')

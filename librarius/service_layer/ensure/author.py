@@ -13,7 +13,7 @@ if tp.TYPE_CHECKING:
     from librarius.domain.messages import AbstractMessage
 
 
-def author_not_exists_skip(message: 'AbstractMessage', uow_context: 'AbstractUnitOfWork') -> None:
+def old_author_not_exists_skip(message: 'AbstractMessage', uow_context: 'AbstractUnitOfWork') -> None:
     session: 'Session' = uow_context.context.session
     author: 'Author' = session.query(Author).filter_by(uuid=message.author_uuid, name=message.name).first()
 
@@ -21,7 +21,7 @@ def author_not_exists_skip(message: 'AbstractMessage', uow_context: 'AbstractUni
         raise SkipMessage(f"Author with uuid {message.author_uuid} and name {message.name} exists")
 
 
-def author_exists(message: 'AbstractMessage', uow_context: 'AbstractUnitOfWork'):
+def old_author_exists(message: 'AbstractMessage', uow_context: 'AbstractUnitOfWork'):
     session: 'Session' = uow_context.context.session
     author: 'Author' = session.query(Author).filter_by(uuid=message.author_uuid, name=message.author_name).first()
 
