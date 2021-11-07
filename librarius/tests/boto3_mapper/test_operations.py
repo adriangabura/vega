@@ -134,3 +134,16 @@ def test_object_exists(
         default_test_object.key,
     )
     assert check
+
+
+def test_object_doesnt_exists(
+    default_test_bucket,
+    default_test_object,
+    boto3_default_resource,
+):
+    check = boto_mapper.ObjectOperation.check_object_exists(
+        boto3_default_resource,
+        default_test_bucket.name,
+        "inexistent_object1138",
+    )
+    assert not check
