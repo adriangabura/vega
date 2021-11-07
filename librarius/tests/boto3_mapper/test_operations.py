@@ -28,11 +28,8 @@ def test_create_and_teardown_bucket(boto3_default_resource, boto3_default_sessio
     )
 
     bucket = boto_mapper.BucketOperation.get(boto3_default_resource, boto3_default_client, bucket_name)
-
     assert bucket.name == bucket_name
 
     boto_mapper.BucketOperation.delete(boto3_default_resource, boto3_default_client, bucket_name)
-
     bucket = boto_mapper.BucketOperation.get(boto3_default_resource, boto3_default_client, bucket_name)
-
     assert not bucket
