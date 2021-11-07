@@ -63,7 +63,11 @@ def default_test_bucket(
 
 
 @pytest.fixture(scope="function")
-def default_test_object(default_test_bucket: Bucket, file_dto: FileUploadDto, boto3_default_resource: S3ServiceResource):
+def default_test_object(
+    default_test_bucket: Bucket,
+    file_dto: FileUploadDto,
+    boto3_default_resource: S3ServiceResource,
+):
     test_object = boto_mapper.ObjectOperation.put(
         bucket=default_test_bucket,
         binary_content=file_dto.body,
@@ -72,4 +76,6 @@ def default_test_object(default_test_bucket: Bucket, file_dto: FileUploadDto, bo
         key="key.cerbulan",
     )
     yield test_object
-    boto_mapper.ObjectOperation.delete(boto3_default_resource, default_test_bucket.name, "key.cerbulan")
+    boto_mapper.ObjectOperation.delete(
+        boto3_default_resource, default_test_bucket.name, "key.cerbulan"
+    )

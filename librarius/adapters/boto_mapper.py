@@ -46,7 +46,9 @@ class BucketOperation:
                     '{error.response['ResponseMetadata']['HTTPHeaders']['x-amz-bucket-region']}'."""
                 )
             elif error.response["Error"]["Code"] == "InvalidBucketName":
-                logger.error(f"Creating a bucket with with name '{name}' failed because the name is invalid.")
+                logger.error(
+                    f"Creating a bucket with with name '{name}' failed because the name is invalid."
+                )
             else:
                 logger.exception(error.response)
             return False
