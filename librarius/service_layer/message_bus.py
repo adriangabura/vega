@@ -1,7 +1,12 @@
 import logging
 import typing as tp
 from collections import deque
-from librarius.domain.messages import AbstractMessage, AbstractEvent, AbstractCommand, AbstractQuery
+from librarius.domain.messages import (
+    AbstractMessage,
+    AbstractEvent,
+    AbstractCommand,
+    AbstractQuery,
+)
 from librarius.service_layer.uow import AbstractUnitOfWork
 from librarius.domain.exceptions import SkipMessage
 
@@ -10,11 +15,11 @@ logger = logging.getLogger(__name__)
 
 class MessageBus:
     def __init__(
-            self,
-            uow: AbstractUnitOfWork,
-            event_handlers: dict[tp.Type[AbstractEvent], list[tp.Callable]],
-            command_handlers: dict[tp.Type[AbstractCommand], tp.Callable],
-            query_handlers: dict[tp.Type[AbstractQuery], tp.Callable]
+        self,
+        uow: AbstractUnitOfWork,
+        event_handlers: dict[tp.Type[AbstractEvent], list[tp.Callable]],
+        command_handlers: dict[tp.Type[AbstractCommand], tp.Callable],
+        query_handlers: dict[tp.Type[AbstractQuery], tp.Callable],
     ):
         self.queue: deque[AbstractMessage] = deque()
         self.uow = uow
@@ -37,7 +42,7 @@ class MessageBus:
                 else:
                     raise Exception(f"{message} was not an Event, Command or Query")
         except SkipMessage as error:
-            logger.warning(f'Skipping message {message.uuid} because {error.reason}')
+            logger.warning(f"Skipping message {message.uuid} because {error.reason}")
 
     def handle_event(self, event: AbstractEvent) -> None:
         for handler in self.event_handlers[type(event)]:

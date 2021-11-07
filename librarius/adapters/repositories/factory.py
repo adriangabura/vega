@@ -7,7 +7,9 @@ from librarius.adapters.repositories.publications import PublicationsRepository
 from librarius.adapters.repositories.authors import AuthorsRepository
 from librarius.adapters.repositories.series import SeriesRepository
 
-TAbstractRepositoryCollection = tp.TypeVar('TAbstractRepositoryCollection', bound='AbstractRepositoryCollection')
+TAbstractRepositoryCollection = tp.TypeVar(
+    "TAbstractRepositoryCollection", bound="AbstractRepositoryCollection"
+)
 
 
 class AbstractRepositoryCollection(tp.Generic[TAbstractRepositoryCollection], abc.ABC):
@@ -33,13 +35,15 @@ class AbstractRepositoryCollection(tp.Generic[TAbstractRepositoryCollection], ab
 
 
 @dataclass(frozen=True)
-class DefaultRepositoryCollection(AbstractRepositoryCollection['DefaultRepositoryCollection']):
+class DefaultRepositoryCollection(
+    AbstractRepositoryCollection["DefaultRepositoryCollection"]
+):
     publications: PublicationsRepository
     authors: AuthorsRepository
     series: SeriesRepository
 
     def __init__(self, context: AbstractRepositoryContext):
-        object.__setattr__(self, '_context', context)
+        object.__setattr__(self, "_context", context)
         self.inject_context(PublicationsRepository)
         self.inject_context(AuthorsRepository)
         self.inject_context(SeriesRepository)

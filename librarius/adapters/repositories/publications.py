@@ -7,7 +7,9 @@ if tp.TYPE_CHECKING:
     from librarius.types import Reference
 
 
-class PublicationsRepository(AbstractRepository['PublicationsRepository', SQLAlchemyRepositoryContext]):
+class PublicationsRepository(
+    AbstractRepository["PublicationsRepository", SQLAlchemyRepositoryContext]
+):
     name: tp.ClassVar[str] = "publications"
 
     def add(self, publication: "Publication") -> None:
@@ -19,7 +21,7 @@ class PublicationsRepository(AbstractRepository['PublicationsRepository', SQLAlc
 
     def find(self):
         pass
-        #return self.context.query(query_object)
+        # return self.context.query(query_object)
 
-    def find_by_uuid(self, uuid: str) -> tp.Optional['Publication']:
+    def find_by_uuid(self, uuid: str) -> tp.Optional["Publication"]:
         return self.context.session.query(Publication).filter_by(uuid=uuid).first()

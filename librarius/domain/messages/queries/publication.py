@@ -3,10 +3,10 @@ from librarius.domain.messages import AbstractQuery
 
 
 @dataclasses.dataclass
-class AllPublications(AbstractQuery['AllPublications']):
+class AllPublications(AbstractQuery["AllPublications"]):
     pass
 
 
 @dataclasses.dataclass
-class PublicationByUuid(AbstractQuery['AllPublications']):
+class PublicationByUuid(AbstractQuery["AllPublications"]):
     publication_uuid: str

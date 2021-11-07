@@ -7,26 +7,38 @@ from librarius.service_layer import handlers, message_bus, uow as uow_package
 if tp.TYPE_CHECKING:
     from librarius.service_layer import AbstractUnitOfWork
     from librarius.adapters.notifications import AbstractNotification
-    from librarius.domain.messages import AbstractCommand, AbstractEvent, AbstractQuery, AbstractMessage
+    from librarius.domain.messages import (
+        AbstractCommand,
+        AbstractEvent,
+        AbstractQuery,
+        AbstractMessage,
+    )
     from librarius.service_layer.handlers import AbstractHandler, TAbstractHandler
 
 
-def inject_dependencies(handler_type: tp.Type['AbstractHandler'], input_dependencies: dict) -> tp.Callable:
+def inject_dependencies(
+    handler_type: tp.Type["AbstractHandler"], input_dependencies: dict
+) -> tp.Callable:
     params = inspect.signature(handler_type).parameters
     dependencies: dict[str, tp.Union[tp.Callable, tp.Type]] = {
-        name: dependency for name, dependency in input_dependencies.items() if name in params}
+        name: dependency
+        for name, dependency in input_dependencies.items()
+        if name in params
+    }
 
-    def handler_with_injections(message: "AbstractMessage") -> tp.Callable[["AbstractMessage"], "AbstractHandler"]:
+    def handler_with_injections(
+        message: "AbstractMessage",
+    ) -> tp.Callable[["AbstractMessage"], "AbstractHandler"]:
         return handler_type(**dependencies)(message)
 
     return handler_with_injections
 
 
 def bootstrap(
-        start_orm: bool = True,
-        uow: "AbstractUnitOfWork" = uow_package.GenericUnitOfWork(),
-        notifications: "AbstractNotification" = None,
-        publish: tp.Callable = redis_eventpublisher.publish
+    start_orm: bool = True,
+    uow: "AbstractUnitOfWork" = uow_package.GenericUnitOfWork(),
+    notifications: "AbstractNotification" = None,
+    publish: tp.Callable = redis_eventpublisher.publish,
 ) -> message_bus.MessageBus:
     if notifications is None:
         notifications = MemoryNotification()
@@ -37,7 +49,7 @@ def bootstrap(
     dependencies: dict = {
         "uow": uow,
         "notifications": notifications,
-        "publish": publish
+        "publish": publish,
     }
     injected_event_handlers: dict[tp.Type["AbstractEvent"], list[tp.Callable]] = {
         event_type: [
@@ -59,5 +71,5 @@ def bootstrap(
         uow=uow,
         event_handlers=injected_event_handlers,
         command_handlers=injected_command_handlers,
-        query_handlers=injected_query_handlers
+        query_handlers=injected_query_handlers,
     )

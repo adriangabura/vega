@@ -9,7 +9,7 @@ if tp.TYPE_CHECKING:
 
 
 class Entity:
-    _repr_attributes: list[str] = ['uuid', 'date_added', 'date_modified']
+    _repr_attributes: list[str] = ["uuid", "date_added", "date_modified"]
 
     @classmethod
     def _add_repr_attribute(cls, attribute: str) -> None:
@@ -23,10 +23,10 @@ class Entity:
         return f"{attribute}={value}" if value is not None else None
 
     def __init__(
-            self,
-            uuid: str = None,
-            date_added: datetime = None,
-            date_modified: datetime = None
+        self,
+        uuid: str = None,
+        date_added: datetime = None,
+        date_modified: datetime = None,
     ) -> None:
         self.uuid: str = str(uuid_factory(uuid))
         self.date_added: datetime = datetime_factory(date_added)
@@ -34,5 +34,11 @@ class Entity:
         self.events: deque["AbstractEvent"] = deque()
 
     def __repr__(self) -> str:
-        attributes = [self._get_repr_attribute(attribute) for attribute in self._repr_attributes if self._get_repr_attribute(attribute) is not None]
-        return f"{self.__class__.__name__}({', '.join(attributes)})" # To check the above
+        attributes = [
+            self._get_repr_attribute(attribute)
+            for attribute in self._repr_attributes
+            if self._get_repr_attribute(attribute) is not None
+        ]
+        return (
+            f"{self.__class__.__name__}({', '.join(attributes)})"  # To check the above
+        )

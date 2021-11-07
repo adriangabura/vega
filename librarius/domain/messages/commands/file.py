@@ -5,6 +5,6 @@ from librarius.domain.messages import AbstractCommand
 
 
 @dataclasses.dataclass
-class StoreFile(AbstractCommand['StoreFile']):
+class StoreFile(AbstractCommand["StoreFile"]):
     file: tp.Any
     uuid: UUID

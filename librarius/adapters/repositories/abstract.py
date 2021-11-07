@@ -4,10 +4,12 @@ import typing as tp
 from librarius.adapters.repositories.contexts import TAbstractRepositoryContext
 
 
-TAbstractRepository = tp.TypeVar('TAbstractRepository', bound='AbstractRepository')
+TAbstractRepository = tp.TypeVar("TAbstractRepository", bound="AbstractRepository")
 
 
-class AbstractRepository(abc.ABC, tp.Generic[TAbstractRepository, TAbstractRepositoryContext]):
+class AbstractRepository(
+    abc.ABC, tp.Generic[TAbstractRepository, TAbstractRepositoryContext]
+):
     name: tp.ClassVar[str] = "abstract"
 
     def __init__(self, context: "TAbstractRepositoryContext"):

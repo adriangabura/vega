@@ -1,11 +1,16 @@
 import typing as tp
-from librarius.adapters.repositories.contexts.abstract import AbstractRepositoryContext, AbstractContextMaker
+from librarius.adapters.repositories.contexts.abstract import (
+    AbstractRepositoryContext,
+    AbstractContextMaker,
+)
 
 if tp.TYPE_CHECKING:
     from sqlalchemy.orm import Session, sessionmaker
 
 
-class SQLAlchemyRepositoryContext(AbstractRepositoryContext['SQLAlchemyRepositoryContext']):
+class SQLAlchemyRepositoryContext(
+    AbstractRepositoryContext["SQLAlchemyRepositoryContext"]
+):
     def __init__(self, session: "Session"):
         self.session: "Session" = session
 
@@ -25,7 +30,9 @@ class SQLAlchemyRepositoryContext(AbstractRepositoryContext['SQLAlchemyRepositor
         self.session.close()
 
 
-class SQLAlchemyContextMaker(AbstractContextMaker['SQLAlchemyContextMaker', 'SQLAlchemyRepositoryContext']):
+class SQLAlchemyContextMaker(
+    AbstractContextMaker["SQLAlchemyContextMaker", "SQLAlchemyRepositoryContext"]
+):
     def __init__(self, session_factory: "sessionmaker"):
         self.session_factory = session_factory
 

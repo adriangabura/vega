@@ -1,4 +1,4 @@
-class SkipMessage (Exception):
+class SkipMessage(Exception):
     """
     This exception is raised when a message can't be processed, but there's no
     incorrect behavior. For example, we might receive the same message multiple

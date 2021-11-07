@@ -21,9 +21,9 @@ def test_add_find_and_remove_publications(sqlite_session_factory):
     session.commit()
     [*results] = session.execute("SELECT * FROM publications")
     print(results)
-    #assert repo.find(str(p1.uuid)) == p1
-    #assert repo.find(str(p2.uuid)) == p2
-    #repo.remove(str(p1.uuid))
-    #repo.remove(str(p2.uuid))
-    #assert not repo.find(str(p1.uuid))
-    #assert not repo.find(str(p2.uuid))
+    # assert repo.find(str(p1.uuid)) == p1
+    # assert repo.find(str(p2.uuid)) == p2
+    # repo.remove(str(p1.uuid))
+    # repo.remove(str(p2.uuid))
+    # assert not repo.find(str(p1.uuid))
+    # assert not repo.find(str(p2.uuid))

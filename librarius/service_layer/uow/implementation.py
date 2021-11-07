@@ -1,6 +1,9 @@
 import typing as tp
 from librarius.service_layer.uow import AbstractUnitOfWork
-from librarius.adapters.utils import DEFAULT_REPOSITORY_CONTEXT_FACTORY, DEFAULT_REPOSITORY_FACTORY
+from librarius.adapters.utils import (
+    DEFAULT_REPOSITORY_CONTEXT_FACTORY,
+    DEFAULT_REPOSITORY_FACTORY,
+)
 
 if tp.TYPE_CHECKING:
     # from librarius.service_layer.uow.abstract import TAbstractUnitOfWork
@@ -12,15 +15,21 @@ if tp.TYPE_CHECKING:
 
 
 class GenericUnitOfWork(AbstractUnitOfWork["GenericUnitOfWork"]):
-    def __init__(self,
-                 repository_factory=DEFAULT_REPOSITORY_FACTORY,
-                 context_factory: "AbstractContextMaker" = DEFAULT_REPOSITORY_CONTEXT_FACTORY):
-        self.repository_factory: tp.Type[DefaultRepositoryCollection] = repository_factory
+    def __init__(
+        self,
+        repository_factory=DEFAULT_REPOSITORY_FACTORY,
+        context_factory: "AbstractContextMaker" = DEFAULT_REPOSITORY_CONTEXT_FACTORY,
+    ):
+        self.repository_factory: tp.Type[
+            DefaultRepositoryCollection
+        ] = repository_factory
         self.context_factory = context_factory
 
     def __enter__(self, *args, **kwargs) -> "GenericUnitOfWork":
         self.context: "AbstractRepositoryContext" = self.context_factory()
-        self.repositories: DefaultRepositoryCollection = self.repository_factory(self.context)
+        self.repositories: DefaultRepositoryCollection = self.repository_factory(
+            self.context
+        )
         return self
 
     def __exit__(self, *args, **kwargs) -> None:

@@ -6,4 +6,4 @@ from librarius.service_layer.uow import AbstractUnitOfWork
 if tp.TYPE_CHECKING:
     pass
 
-Reference = tp.NewType('Reference', str)
+Reference = tp.NewType("Reference", str)

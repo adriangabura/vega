@@ -2,7 +2,9 @@ import abc
 import typing as tp
 
 
-TAbstractRepositoryContext = tp.TypeVar('TAbstractRepositoryContext', bound='AbstractRepositoryContext')
+TAbstractRepositoryContext = tp.TypeVar(
+    "TAbstractRepositoryContext", bound="AbstractRepositoryContext"
+)
 
 
 class AbstractRepositoryContext(abc.ABC, tp.Generic[TAbstractRepositoryContext]):
@@ -29,10 +31,14 @@ class AbstractRepositoryContext(abc.ABC, tp.Generic[TAbstractRepositoryContext])
         raise NotImplementedError
 
 
-TAbstractContextMaker = tp.TypeVar('TAbstractContextMaker', bound='AbstractContextMaker')
+TAbstractContextMaker = tp.TypeVar(
+    "TAbstractContextMaker", bound="AbstractContextMaker"
+)
 
 
-class AbstractContextMaker(abc.ABC, tp.Generic[TAbstractContextMaker, TAbstractRepositoryContext]):
+class AbstractContextMaker(
+    abc.ABC, tp.Generic[TAbstractContextMaker, TAbstractRepositoryContext]
+):
     @abc.abstractmethod
     def __call__(self) -> "TAbstractRepositoryContext":
         raise NotImplementedError

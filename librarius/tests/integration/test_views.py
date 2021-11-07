@@ -27,13 +27,13 @@ def sqlite_bus(sql_alchemy_context_factory: "SQLAlchemyContextMaker"):
             context_factory=sql_alchemy_context_factory,
         ),
         notifications=mock.Mock(),
-        publish=lambda *args: None
+        publish=lambda *args: None,
     )
     yield bus
     clear_mappers()
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def generate_uuids():
     class IdGen:
         def __init__(self):
@@ -49,21 +49,36 @@ def generate_uuids():
 
 def test_create_publication(sqlite_bus: "MessageBus", generate_uuids):
     publication_uuid = generate_uuids.publication1
-    sqlite_bus.handle(commands.CreatePublication(publication_uuid=publication_uuid, title="Test Publication Title"))
-    result: 'models.Publication' = sqlite_bus.handle(queries.PublicationByUuid(publication_uuid))
+    sqlite_bus.handle(
+        commands.CreatePublication(
+            publication_uuid=publication_uuid, title="Test Publication Title"
+        )
+    )
+    result: "models.Publication" = sqlite_bus.handle(
+        queries.PublicationByUuid(publication_uuid)
+    )
 
     assert publication_uuid == result.uuid
 
 
-def test_add_nonexistent_author_to_publication(sqlite_bus: "MessageBus", generate_uuids):
+def test_add_nonexistent_author_to_publication(
+    sqlite_bus: "MessageBus", generate_uuids
+):
 
     author_uuid = generate_uuids.author1
     publication_uuid = generate_uuids.publication1
 
-    sqlite_bus.handle(commands.AddAuthorToPublication(
-        publication_uuid=publication_uuid, author_uuid=author_uuid, author_name="Test Author Name"))
+    sqlite_bus.handle(
+        commands.AddAuthorToPublication(
+            publication_uuid=publication_uuid,
+            author_uuid=author_uuid,
+            author_name="Test Author Name",
+        )
+    )
 
-    publication: 'models.Publication' = sqlite_bus.handle(queries.PublicationByUuid(publication_uuid=publication_uuid))
+    publication: "models.Publication" = sqlite_bus.handle(
+        queries.PublicationByUuid(publication_uuid=publication_uuid)
+    )
 
     publication_authors_uuid = [author.uuid for author in publication.authors]
 
@@ -76,13 +91,23 @@ def test_add_publication_to_series(sqlite_bus: "MessageBus", generate_uuids):
 
     sqlite_bus.handle(commands.CreateSeries(series_uuid, "Some series"))
 
-    sqlite_bus.handle(commands.AddPublicationToSeries(
-        series_uuid=series_uuid, series_name="Test Series", publication_uuid=publication_uuid))
+    sqlite_bus.handle(
+        commands.AddPublicationToSeries(
+            series_uuid=series_uuid,
+            series_name="Test Series",
+            publication_uuid=publication_uuid,
+        )
+    )
 
-    series: 'models.Series' = sqlite_bus.handle(queries.SeriesByUuid(series_uuid=series_uuid))
+    series: "models.Series" = sqlite_bus.handle(
+        queries.SeriesByUuid(series_uuid=series_uuid)
+    )
     if series:
-        series_publications_uuid = [publication.uuid for publication in series.publications]
+        series_publications_uuid = [
+            publication.uuid for publication in series.publications
+        ]
         assert publication_uuid in series_publications_uuid
+
 
 # def test_create_author(sqlite_bus: "MessageBus"):
 #     author_uuid = str(uuid4())
@@ -98,4 +123,3 @@ def test_add_publication_to_series(sqlite_bus: "MessageBus", generate_uuids):
 #     sqlite_bus.handle(commands.CreateSeries(series_uuid=series_uuid, name="Series Name"))
 #     result: 'models.Series' = sqlite_bus.handle(queries.SeriesByUuid(series_uuid))
 #     assert result.uuid == series_uuid
-

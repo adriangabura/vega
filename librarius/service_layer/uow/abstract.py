@@ -4,11 +4,14 @@ import typing as tp
 if tp.TYPE_CHECKING:
     from librarius.domain.messages import AbstractEvent
     from librarius.adapters.repositories.abstract import AbstractRepository
-    from librarius.adapters.repositories.contexts.abstract import TAbstractContextMaker, AbstractRepositoryContext
+    from librarius.adapters.repositories.contexts.abstract import (
+        TAbstractContextMaker,
+        AbstractRepositoryContext,
+    )
     from librarius.adapters.repositories.factory import AbstractRepositoryCollection
 
 
-TAbstractUnitOfWork = tp.TypeVar('TAbstractUnitOfWork', bound='AbstractUnitOfWork')
+TAbstractUnitOfWork = tp.TypeVar("TAbstractUnitOfWork", bound="AbstractUnitOfWork")
 
 
 class AbstractUnitOfWork(abc.ABC, tp.Generic[TAbstractUnitOfWork]):
@@ -16,9 +19,9 @@ class AbstractUnitOfWork(abc.ABC, tp.Generic[TAbstractUnitOfWork]):
     context: "AbstractRepositoryContext"
 
     @abc.abstractmethod
-    def __init__(self,
-                 repository_factory,
-                 context_factory: "TAbstractContextMaker") -> None:
+    def __init__(
+        self, repository_factory, context_factory: "TAbstractContextMaker"
+    ) -> None:
         raise NotImplementedError
 
     @abc.abstractmethod

@@ -13,17 +13,31 @@ if tp.TYPE_CHECKING:
     from librarius.domain.messages import AbstractMessage
 
 
-def series_not_exists_skip(message: 'AbstractMessage', uow_context: 'AbstractUnitOfWork') -> None:
-    session: 'Session' = uow_context.context.session
-    series: 'Series' = session.query(Series).filter_by(uuid=message.series_uuid, name=message.series_name).first()
+def series_not_exists_skip(
+    message: "AbstractMessage", uow_context: "AbstractUnitOfWork"
+) -> None:
+    session: "Session" = uow_context.context.session
+    series: "Series" = (
+        session.query(Series)
+        .filter_by(uuid=message.series_uuid, name=message.series_name)
+        .first()
+    )
 
     if series:
-        raise SkipMessage(f"Series with uuid {message.series_uuid} and name {message.series_name} exists")
+        raise SkipMessage(
+            f"Series with uuid {message.series_uuid} and name {message.series_name} exists"
+        )
 
 
-def series_exists(message: 'AbstractMessage', uow_context: 'AbstractUnitOfWork') -> None:
-    session: 'Session' = uow_context.context.session
-    series: 'Series' = session.query(Series).filter_by(uuid=message.series_uuid, name=message.series_name).first()
+def series_exists(
+    message: "AbstractMessage", uow_context: "AbstractUnitOfWork"
+) -> None:
+    session: "Session" = uow_context.context.session
+    series: "Series" = (
+        session.query(Series)
+        .filter_by(uuid=message.series_uuid, name=message.series_name)
+        .first()
+    )
 
     if not series:
         raise exceptions.SeriesNotFound(message)

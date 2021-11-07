@@ -6,10 +6,16 @@ name = "pypi"
 [packages]
 sqlalchemy = {version = "~=1.4.25", extras = ["mypy"]}
 python-dotenv = "~=0.19"
+boto3 = "~=1.19.12"
 
 [dev-packages]
-pytest = "*"
-mypy = "*"
+pytest = "~=6.2.5"
+mypy = "~=0.910"
+mypy-boto3 = "~=1.19.12"
+botocore-stubs = "~=1.22.12"
+boto3-stubs = {version = "~=1.19.12", extras = ["s3"]}
+mypy-boto3-s3 = "~=1.19.12"
+black = "~=21.10b0"
 
 [requires]
 python_version = "3.9"

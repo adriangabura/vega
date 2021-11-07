@@ -34,7 +34,7 @@ def test_sql(sqlite_session_factory):
         title="Cerbulan Book",
         date_added=some_datetime,
         date_modified=some_datetime,
-        date_published=some_date
+        date_published=some_date,
     )
 
     author_exp: "TextClause" = text(
@@ -45,7 +45,7 @@ def test_sql(sqlite_session_factory):
         uuid=author_uuid,
         name="Cerbulan Maran",
         date_added=some_datetime,
-        date_modified=some_datetime
+        date_modified=some_datetime,
     )
 
     series_exp: "TextClause" = text(
@@ -56,7 +56,7 @@ def test_sql(sqlite_session_factory):
         uuid=series_uuid,
         name="Cerbulan Series",
         date_added=some_datetime,
-        date_modified=some_datetime
+        date_modified=some_datetime,
     )
 
     series_publications_exp: "TextClause" = text(
@@ -64,8 +64,7 @@ def test_sql(sqlite_session_factory):
     )
 
     series_publications_exp: "TextClause" = series_publications_exp.bindparams(
-        series_uuid=series_uuid,
-        publication_uuid=publication_uuid
+        series_uuid=series_uuid, publication_uuid=publication_uuid
     )
 
     publications_authors: "TextClause" = text(
@@ -73,8 +72,7 @@ def test_sql(sqlite_session_factory):
     )
 
     publications_authors: "TextClause" = publications_authors.bindparams(
-        author_uuid=author_uuid,
-        publication_uuid=publication_uuid
+        author_uuid=author_uuid, publication_uuid=publication_uuid
     )
 
     session.execute(publication_exp)

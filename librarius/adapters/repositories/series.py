@@ -15,7 +15,7 @@ class SeriesRepository(AbstractRepository):
 
     def find(self):
         pass
-        #return self.context.query(query_object)
+        # return self.context.query(query_object)
 
-    def find_by_uuid(self, uuid: str) -> tp.Optional['Series']:
+    def find_by_uuid(self, uuid: str) -> tp.Optional["Series"]:
         return self.context.session.query(Series).filter_by(uuid=uuid).first()
