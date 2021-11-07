@@ -65,3 +65,14 @@ def test_create_and_teardown_bucket(
         boto3_default_resource, boto3_default_client, bucket_name
     )
     assert not bucket
+
+
+@pytest.mark.usefixtures("default_test_object")
+def test_check_bucket_not_empty(default_test_bucket, boto3_default_resource, boto3_default_client):
+    assert boto_mapper.BucketOperation.count_objects(
+        boto3_default_resource, boto3_default_client, default_test_bucket.name) == 1
+
+
+def test_check_bucket_empty(default_test_bucket, boto3_default_resource, boto3_default_client):
+    assert boto_mapper.BucketOperation.count_objects(
+        boto3_default_resource, boto3_default_client, default_test_bucket.name) == 0
