@@ -121,3 +121,16 @@ def test_generate_presigned_url(
         config.PRESIGNED_URL_EXPIRATION,
     )
     assert url
+
+
+def test_object_exists(
+    default_test_bucket,
+    default_test_object,
+    boto3_default_resource,
+):
+    check = boto_mapper.ObjectOperation.check_object_exists(
+        boto3_default_resource,
+        default_test_bucket.name,
+        default_test_object.key,
+    )
+    assert check

@@ -65,7 +65,7 @@ class BucketOperation:
             except ClientError as error:
                 status_code = error.response["ResponseMetadata"]["HTTPStatusCode"]
                 if status_code == 404:
-                    logger.error(f"Bucket '{name}' not found.")
+                    logger.warning(f"Bucket '{name}' not found.")
                 else:
                     logger.exception(error)
                 return False
