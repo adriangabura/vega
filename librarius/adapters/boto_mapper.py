@@ -9,7 +9,6 @@ from botocore.client import BaseClient
 from boto3.exceptions import ResourceNotExistsError
 from botocore.exceptions import ClientError
 
-
 from librarius.config.utils import TRegions
 from librarius.service_layer.dto import FileUploadDto
 
@@ -293,6 +292,25 @@ class BucketWrapper:
 
 
 class FileRepository:
+    def __init__(self, bucket_wrapper: BucketWrapper):
+        self._wrapper = bucket_wrapper
+
+    @classmethod
+    def initialize(
+        cls,
+        aws_access_key_id: str,
+        aws_secret_access_key: str,
+        region_name: TRegions,
+        bucket_name: str,
+    ):
+        bucket_wrapper = BucketWrapper.from_config(
+            aws_access_key_id=aws_access_key_id,
+            aws_secret_access_key=aws_secret_access_key,
+            region_name=region_name,
+            bucket_name=bucket_name,
+        )
+        return cls(bucket_wrapper=bucket_wrapper)
+
     def upload_file(self):
         pass
 
