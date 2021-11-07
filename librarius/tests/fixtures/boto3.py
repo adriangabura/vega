@@ -29,11 +29,6 @@ def boto3_default_client(boto3_default_resource: S3ServiceResource) -> S3Client:
 
 
 @pytest.fixture(scope="session")
-def s3_mapper(boto3_default_session) -> boto_mapper.SessionWrapper:
-    return boto_mapper.SessionWrapper(boto3_default_session)
-
-
-@pytest.fixture(scope="session")
 def file_dto() -> FileUploadDto:
     body = '<a href="https://google.com">Hello</a>'
     encoded_body = bytes(body, "utf")
