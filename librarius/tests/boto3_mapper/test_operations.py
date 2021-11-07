@@ -147,3 +147,12 @@ def test_object_doesnt_exists(
         "inexistent_object1138",
     )
     assert not check
+
+
+def test_retrieve_object(
+    default_test_bucket, default_test_object, boto3_default_resource
+):
+    retrieved_object = boto_mapper.ObjectOperation.retrieve(
+        boto3_default_resource, default_test_bucket.name, default_test_object.key
+    )
+    assert retrieved_object == default_test_object
