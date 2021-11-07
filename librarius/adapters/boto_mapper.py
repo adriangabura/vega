@@ -21,6 +21,7 @@ class S3File:
 
 class BucketOperation:
     """BucketOperations contains the main operations done on buckets like create, delete, retrieve, empty, count objects"""
+
     @staticmethod
     def create(
         resource: S3ServiceResource, name: str, region: TRegions
@@ -211,6 +212,7 @@ class ObjectOperation:
 
 class BucketWrapper:
     """BucketWrapper only uses BucketOperations and ObjectOperations to upload and delete files and create and clean-up buckets"""
+
     def __init__(
         self, resource: S3ServiceResource, bucket_name: str, region_name: TRegions
     ):
@@ -219,9 +221,7 @@ class BucketWrapper:
         self.bucket_name = bucket_name
         self.region_name = region_name
 
-    def upload_file(
-        self, file_dto: FileUploadDto, key: str
-    ):
+    def upload_file(self, file_dto: FileUploadDto, key: str):
         bucket = BucketOperation.get_or_create(
             resource=self._resource,
             client=self._client,
@@ -258,7 +258,9 @@ class SessionWrapper:
         self.buckets: dict = dict()
 
     def initialize_bucket_wrapper(self, bucket_name: str) -> BucketWrapper:
-        self.buckets[bucket_name] = BucketWrapper(self.resource, bucket_name, self.session.region_name)
+        self.buckets[bucket_name] = BucketWrapper(
+            self.resource, bucket_name, self.session.region_name
+        )
         return self.buckets[bucket_name]
 
     @classmethod

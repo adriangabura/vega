@@ -41,7 +41,7 @@ def file_dto() -> FileUploadDto:
     return FileUploadDto.from_body(encoded_body, "text/html")
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def default_test_bucket(
     boto3_default_resource: S3ServiceResource,
     boto3_default_client: S3Client,
@@ -62,7 +62,7 @@ def default_test_bucket(
     )
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def default_test_object(default_test_bucket: Bucket, file_dto: FileUploadDto, boto3_default_resource: S3ServiceResource):
     test_object = boto_mapper.ObjectOperation.put(
         bucket=default_test_bucket,
