@@ -68,11 +68,56 @@ def test_create_and_teardown_bucket(
 
 
 @pytest.mark.usefixtures("default_test_object")
-def test_check_bucket_not_empty(default_test_bucket, boto3_default_resource, boto3_default_client):
-    assert boto_mapper.BucketOperation.count_objects(
-        boto3_default_resource, boto3_default_client, default_test_bucket.name) == 1
+def test_check_bucket_not_empty(
+    default_test_bucket, boto3_default_resource, boto3_default_client
+):
+    assert (
+        boto_mapper.BucketOperation.count_objects(
+            boto3_default_resource, boto3_default_client, default_test_bucket.name
+        )
+        == 1
+    )
 
 
-def test_check_bucket_empty(default_test_bucket, boto3_default_resource, boto3_default_client):
-    assert boto_mapper.BucketOperation.count_objects(
-        boto3_default_resource, boto3_default_client, default_test_bucket.name) == 0
+def test_check_bucket_empty(
+    default_test_bucket, boto3_default_resource, boto3_default_client
+):
+    assert (
+        boto_mapper.BucketOperation.count_objects(
+            boto3_default_resource, boto3_default_client, default_test_bucket.name
+        )
+        == 0
+    )
+
+
+@pytest.mark.usefixtures("default_test_object")
+def test_empty_the_bucket(
+    default_test_bucket, boto3_default_resource, boto3_default_client
+):
+    boto_mapper.BucketOperation.empty(
+        boto3_default_resource, boto3_default_client, default_test_bucket.name
+    )
+
+    assert (
+        boto_mapper.BucketOperation.count_objects(
+            boto3_default_resource, boto3_default_client, default_test_bucket.name
+        )
+        == 0
+    )
+
+
+def test_generate_presigned_url(
+    default_test_bucket,
+    default_test_object,
+    boto3_default_resource,
+    boto3_default_client,
+    config,
+):
+    url = boto_mapper.ObjectOperation.generate_presigned_url(
+        boto3_default_resource,
+        boto3_default_client,
+        default_test_bucket.name,
+        default_test_object.key,
+        config.PRESIGNED_URL_EXPIRATION,
+    )
+    assert url

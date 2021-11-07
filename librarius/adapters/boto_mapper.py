@@ -98,7 +98,7 @@ class BucketOperation:
             if bucket_versioning.status == "Enabled" and versioning:
                 bucket.object_versions.delete()
                 return True
-            elif bucket_versioning.status == "Disabled" and not versioning:
+            elif not versioning:
                 bucket.objects.all().delete()
                 return True
         except ClientError as error:
@@ -197,7 +197,7 @@ class ObjectOperation:
 
     @staticmethod
     def generate_presigned_url(
-        resource: S3ServiceResource, client: S3Client, bucket_name: str, key: str
+        resource: S3ServiceResource, client: S3Client, bucket_name: str, key: str, presigned_url_expiration: int
     ) -> tp.Union[str, tp.Literal[False]]:
         if not ObjectOperation.check_object_exists(resource, bucket_name, key):
             return False
@@ -205,7 +205,7 @@ class ObjectOperation:
             response = client.generate_presigned_url(
                 "get_object",
                 Params={"Bucket": bucket_name, "Key": key},
-                ExpiresIn=config.PRESIGNED_URL_EXPIRATION,
+                ExpiresIn=presigned_url_expiration,
             )
         except ClientError as error:
             logger.error(error.response)

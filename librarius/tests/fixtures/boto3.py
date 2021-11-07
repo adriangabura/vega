@@ -47,8 +47,9 @@ def default_test_bucket(
     boto3_default_client: S3Client,
     config: BasicConfig,
 ):
-    bucket = boto_mapper.BucketOperation.create(
+    bucket = boto_mapper.BucketOperation.get_or_create(
         resource=boto3_default_resource,
+        client=boto3_default_client,
         name="cerbulan.burbulan",
         region=config.AWS_REGION,
     )
