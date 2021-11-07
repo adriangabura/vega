@@ -5,7 +5,7 @@ import pytest
 from sqlalchemy import text
 
 from librarius.domain.models import Publication
-from librarius.service_layer.uow.implementation import SQLAlchemyUnitOfWork
+from librarius.service_layer.uow.implementation import GenericUnitOfWork
 
 if tp.TYPE_CHECKING:
     from sqlalchemy.orm import Session
@@ -16,18 +16,22 @@ pytestmark = pytest.mark.usefixtures("mappers")
 
 
 def insert_publications(
-        session: "Session",
-        uuid: "Reference",
-        title: str,
-        date_added: datetime,
-        date_modified: datetime,
-        date_published: date
+    session: "Session",
+    uuid: "Reference",
+    title: str,
+    date_added: datetime,
+    date_modified: datetime,
+    date_published: date,
 ):
     expression: "TextClause" = text(
         "INSERT INTO publications (uuid, title, date_added, date_modified, date_published) VALUES (:uuid, :title, :date_added, :date_modified, :date_published)"
     )
     expression: "TextClause" = expression.bindparams(
-        uuid=uuid, title=title, date_added=date_added, date_modified=date_modified, date_published=date_published
+        uuid=uuid,
+        title=title,
+        date_added=date_added,
+        date_modified=date_modified,
+        date_published=date_published,
     )
     session.execute(expression)
 
@@ -36,22 +40,26 @@ def retrieve(query, uow):
     with uow:
         return uow.session.query(Publication).all()
 
+
 def test_uow_can_retrieve_a_publication(sqlite_session_factory):
     session: "Session" = sqlite_session_factory()
     pub_uuid = str(uuid4())
-    insert_publications(session, pub_uuid, "Cerbulan Book", datetime.now(), datetime.now(), date.today())
+    insert_publications(
+        session, pub_uuid, "Cerbulan Book", datetime.now(), datetime.now(), date.today()
+    )
     session.commit()
 
-    uow = SQLAlchemyUnitOfWork(sqlite_session_factory)
+    uow = GenericUnitOfWork(sqlite_session_factory)
+
+    # with uow:
+    # results = uow.session.query(Publication).all()
 
 
-    #with uow:
-        #results = uow.session.query(Publication).all()
-   #     results = retrieve_all_publications(AllPublications(), uow)
-    #    print(results[0].__dict__)
+#     results = retrieve_all_publications(AllPublications(), uow)
+#    print(results[0].__dict__)
 
 
-#def test_1(sqlite_session_factory):
+# def test_1(sqlite_session_factory):
 #    session: Session = sqlite_session_factory()
 #    uu = str(uuid.uuid4())
 #    title = "Cerbulan"

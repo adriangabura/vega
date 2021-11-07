@@ -9,15 +9,16 @@ if tp.TYPE_CHECKING:
 
 
 class Author(Entity):
-    _repr_attributes = ['uuid', 'date_added', 'date_modified', 'name', 'publications']
+    _repr_attributes = ["uuid", "date_added", "date_modified", "name", "publications"]
+    publications: set["Publication"]
 
     def __init__(
-            self,
-            uuid: str = None,
-            date_added: datetime = None,
-            date_modified: datetime = None,
-            name: str = None
+        self,
+        uuid: str = None,
+        date_added: datetime = None,
+        date_modified: datetime = None,
+        name: str = None,
     ) -> None:
         super().__init__(uuid=uuid, date_added=date_added, date_modified=date_modified)
         self.name: str = name
-        self.publications: list["Publication"] = []
+        self.publications: set["Publication"] = set()

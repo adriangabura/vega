@@ -1,3 +1,4 @@
+import typing as tp
 import abc
 
 
@@ -7,7 +8,7 @@ class AbstractNotification(abc.ABC):
         raise NotImplementedError
 
 
-DEFAULT_HOST = 'https://mock'
+DEFAULT_HOST = "https://mock"
 DEFAULT_PORT = 6666
 
 

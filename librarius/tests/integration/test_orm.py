@@ -34,7 +34,7 @@ def test_mappers(sqlite_session_factory):
         title="Cerbulan Book",
         date_added=some_datetime,
         date_modified=some_datetime,
-        date_published=some_date
+        date_published=some_date,
     )
 
     author_exp: "TextClause" = text(
@@ -45,7 +45,7 @@ def test_mappers(sqlite_session_factory):
         uuid=author_uuid,
         name="Cerbulan Maran",
         date_added=some_datetime,
-        date_modified=some_datetime
+        date_modified=some_datetime,
     )
 
     series_exp: "TextClause" = text(
@@ -56,7 +56,7 @@ def test_mappers(sqlite_session_factory):
         uuid=series_uuid,
         name="Cerbulan Series",
         date_added=some_datetime,
-        date_modified=some_datetime
+        date_modified=some_datetime,
     )
 
     series_publications_exp: "TextClause" = text(
@@ -64,8 +64,7 @@ def test_mappers(sqlite_session_factory):
     )
 
     series_publications_exp: "TextClause" = series_publications_exp.bindparams(
-        series_uuid=series_uuid,
-        publication_uuid=publication_uuid
+        series_uuid=series_uuid, publication_uuid=publication_uuid
     )
 
     publications_authors: "TextClause" = text(
@@ -73,8 +72,7 @@ def test_mappers(sqlite_session_factory):
     )
 
     publications_authors: "TextClause" = publications_authors.bindparams(
-        author_uuid=author_uuid,
-        publication_uuid=publication_uuid
+        author_uuid=author_uuid, publication_uuid=publication_uuid
     )
 
     session.execute(publication_exp)
@@ -83,15 +81,25 @@ def test_mappers(sqlite_session_factory):
     session.execute(series_publications_exp)
     session.execute(publications_authors)
 
-    query_author: models.Author = session.query(models.Author).filter_by(uuid=author_uuid).first()
-    query_publication: models.Publication = session.query(models.Publication).filter_by(uuid=publication_uuid).first()
-    query_series: models.Series = session.query(models.Series).filter_by(uuid=series_uuid).first()
+    query_author: models.Author = (
+        session.query(models.Author).filter_by(uuid=author_uuid).first()
+    )
+    query_publication: models.Publication = (
+        session.query(models.Publication).filter_by(uuid=publication_uuid).first()
+    )
+    query_series: models.Series = (
+        session.query(models.Series).filter_by(uuid=series_uuid).first()
+    )
 
     assert query_author.uuid == author_uuid
     assert query_series.uuid == series_uuid
     assert query_publication.uuid == publication_uuid
 
-    assert query_publication.uuid in [publication.uuid for publication in query_author.publications]
-    assert query_publication.uuid in [publication.uuid for publication in query_series.publications]
+    assert query_publication.uuid in [
+        publication.uuid for publication in query_author.publications
+    ]
+    assert query_publication.uuid in [
+        publication.uuid for publication in query_series.publications
+    ]
     assert query_author.uuid in [author.uuid for author in query_publication.authors]
     assert query_author.uuid in [author.uuid for author in query_series.authors]

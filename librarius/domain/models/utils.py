@@ -1,5 +1,7 @@
+import typing as tp
 from uuid import uuid4, UUID
 from datetime import datetime, date
+
 # import dataclasses
 
 
@@ -24,18 +26,20 @@ from datetime import datetime, date
 def uuid_factory(value: UUID) -> UUID:
     if isinstance(value, UUID):
         return value
+    elif isinstance(value, str):
+        return value
     else:
         return uuid4()
 
 
-def datetime_factory(value: datetime) -> datetime:
+def datetime_factory(value: tp.Optional[datetime]) -> datetime:
     if isinstance(value, datetime):
         return value
     else:
         return datetime.now()
 
 
-def date_factory(value: date) -> date:
+def date_factory(value: tp.Optional[date]) -> date:
     if isinstance(value, date):
         return value
     else:

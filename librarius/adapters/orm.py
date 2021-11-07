@@ -9,7 +9,7 @@ from sqlalchemy import (
     ForeignKey,
     event,
     DateTime,
-    and_
+    and_,
 )
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import registry, relationship, join, QueryContext
@@ -26,7 +26,7 @@ authors: Table = Table(
     Column("uuid", String(255), primary_key=True, autoincrement=False),
     Column("date_added", DateTime),
     Column("date_modified", DateTime),
-    Column("name", String(255))
+    Column("name", String(255)),
 )
 
 series: Table = Table(
@@ -35,7 +35,7 @@ series: Table = Table(
     Column("uuid", String(255), primary_key=True, autoincrement=False),
     Column("date_added", DateTime),
     Column("date_modified", DateTime),
-    Column("name", String(255))
+    Column("name", String(255)),
 )
 
 publications: Table = Table(
@@ -45,21 +45,21 @@ publications: Table = Table(
     Column("title", String(255)),
     Column("date_added", DateTime),
     Column("date_modified", DateTime),
-    Column("date_published", Date)
+    Column("date_published", Date),
 )
 
 series_publications: Table = Table(
     "series_publications",
     metadata,
-    Column("series_uuid", String(255), ForeignKey('series.uuid')),
-    Column("publication_uuid", String(255), ForeignKey('publications.uuid'))
+    Column("series_uuid", String(255), ForeignKey("series.uuid")),
+    Column("publication_uuid", String(255), ForeignKey("publications.uuid")),
 )
 
 publications_authors: Table = Table(
     "publications_authors",
     metadata,
-    Column("publication_uuid", String(255), ForeignKey('publications.uuid')),
-    Column("author_uuid", String(255), ForeignKey('authors.uuid'))
+    Column("publication_uuid", String(255), ForeignKey("publications.uuid")),
+    Column("author_uuid", String(255), ForeignKey("authors.uuid")),
 )
 
 
@@ -72,8 +72,14 @@ def start_mappers():
         models.Author,
         authors,
         properties={
-            "publications": relationship("Publication", secondary=publications_authors, back_populates="authors", lazy="joined")
-        }
+            "publications": relationship(
+                "Publication",
+                secondary=publications_authors,
+                back_populates="authors",
+                lazy="joined",
+                collection_class=set,
+            )
+        },
     )
 
     # Publications
@@ -81,8 +87,14 @@ def start_mappers():
         models.Publication,
         publications,
         properties={
-            "authors": relationship("Author", secondary=publications_authors, back_populates="publications", lazy="subquery")
-        }
+            "authors": relationship(
+                "Author",
+                secondary=publications_authors,
+                back_populates="publications",
+                lazy="subquery",
+                collection_class=set,
+            )
+        },
     )
 
     # Series
@@ -90,33 +102,40 @@ def start_mappers():
         models.Series,
         series,
         properties={
-            "publications": relationship("Publication", secondary=series_publications),
+            "publications": relationship(
+                "Publication", secondary=series_publications, collection_class=set
+            ),
             "authors": relationship(
                 "Author",
-                secondary=join(series_publications, publications_authors,
-                               series_publications.columns.publication_uuid == publications_authors.columns.publication_uuid),
-                primaryjoin=and_(series.columns.uuid == series_publications.columns.series_uuid,
-                                 authors.columns.uuid == publications_authors.columns.author_uuid),
+                secondary=join(
+                    series_publications,
+                    publications_authors,
+                    series_publications.columns.publication_uuid
+                    == publications_authors.columns.publication_uuid,
+                ),
+                primaryjoin=and_(
+                    series.columns.uuid == series_publications.columns.series_uuid,
+                    authors.columns.uuid == publications_authors.columns.author_uuid,
+                ),
                 viewonly=True,
-                lazy="subquery"
-            )
-        })
+                lazy="subquery",
+                collection_class=set,
+            ),
+        },
+    )
 
 
-@event.listens_for(models.Author, 'load')
+@event.listens_for(models.Author, "load")
 def load_author(target: models.Author, context: QueryContext):
     target.events = []
-    target.publications
 
 
-@event.listens_for(models.Series, 'load')
+@event.listens_for(models.Series, "load")
 def load_series(target: models.Series, context: QueryContext):
     target.events = []
-    target.authors
     target.publications
 
 
-@event.listens_for(models.Publication, 'load')
+@event.listens_for(models.Publication, "load")
 def load_publication(target: models.Publication, context: QueryContext):
     target.events = []
-    target.authors

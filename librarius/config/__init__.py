@@ -1,1 +1,1 @@
-from .librarius import config
+from .app import BasicConfig

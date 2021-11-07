@@ -1,29 +1,35 @@
 import abc
 import typing as tp
 
-from librarius.utils import Map
-
 if tp.TYPE_CHECKING:
-    from librarius.domain.events import AbstractEvent
-    from librarius.adapters.repositories import AbstractRepository, AbstractRepositoryMaker
-    from librarius.adapters.repository_contexts import AbstractContextMaker
+    from librarius.domain.messages import AbstractEvent
+    from librarius.adapters.repositories.abstract import AbstractRepository
+    from librarius.adapters.repositories.contexts.abstract import (
+        TAbstractContextMaker,
+        AbstractRepositoryContext,
+    )
+    from librarius.adapters.repositories.factory import AbstractRepositoryCollection
 
 
-class AbstractUnitOfWork(abc.ABC):
-    repositories: "Map[str, AbstractRepository]"
+TAbstractUnitOfWork = tp.TypeVar("TAbstractUnitOfWork", bound="AbstractUnitOfWork")
+
+
+class AbstractUnitOfWork(abc.ABC, tp.Generic[TAbstractUnitOfWork]):
+    repositories: "AbstractRepositoryCollection"
+    context: "AbstractRepositoryContext"
 
     @abc.abstractmethod
-    def __init__(self,
-                 repository_factory: "AbstractRepositoryMaker",
-                 context_factory: "AbstractContextMaker") -> None:
+    def __init__(
+        self, repository_factory, context_factory: "TAbstractContextMaker"
+    ) -> None:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def __enter__(self) -> "AbstractUnitOfWork":
+    def __enter__(self, *args, **kwargs) -> "TAbstractUnitOfWork":
         raise NotImplementedError
 
     @abc.abstractmethod
-    def __exit__(self) -> None:
+    def __exit__(self, *args, **kwargs) -> None:
         raise NotImplementedError
 
     @abc.abstractmethod

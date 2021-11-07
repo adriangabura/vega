@@ -3,34 +3,43 @@ import typing as tp
 from librarius.adapters import orm, redis_eventpublisher
 from librarius.adapters.notifications import MemoryNotification
 from librarius.service_layer import handlers, message_bus, uow as uow_package
-from librarius.service_layer.handlers import sqlalchemy_query_handlers
 
 if tp.TYPE_CHECKING:
-    from librarius.types import Message
     from librarius.service_layer import AbstractUnitOfWork
     from librarius.adapters.notifications import AbstractNotification
-    from librarius.domain.events import AbstractEvent
-    from librarius.domain.commands import AbstractCommand
-    from librarius.domain.queries import AbstractQuery
+    from librarius.domain.messages import (
+        AbstractCommand,
+        AbstractEvent,
+        AbstractQuery,
+        AbstractMessage,
+    )
+    from librarius.service_layer.handlers import AbstractHandler, TAbstractHandler
 
 
-def inject_dependencies(handler: tp.Callable, dependencies: dict) -> tp.Callable[["Message"], tp.Union[tp.Any, None]]:
-    params = inspect.signature(handler).parameters
-    deps: dict[str, tp.Union[tp.Callable, tp.Type]] = {name: dependency for name, dependency in dependencies.items() if name in params}
+def inject_dependencies(
+    handler_type: tp.Type["AbstractHandler"], input_dependencies: dict
+) -> tp.Callable:
+    params = inspect.signature(handler_type).parameters
+    dependencies: dict[str, tp.Union[tp.Callable, tp.Type]] = {
+        name: dependency
+        for name, dependency in input_dependencies.items()
+        if name in params
+    }
 
-    def handler_with_injections(message: "Message") -> tp.Union[tp.Any, None]:
-        return handler(message, **deps)
+    def handler_with_injections(
+        message: "AbstractMessage",
+    ) -> tp.Callable[["AbstractMessage"], "AbstractHandler"]:
+        return handler_type(**dependencies)(message)
 
     return handler_with_injections
 
 
 def bootstrap(
-        start_orm: bool = True,
-        uow: "AbstractUnitOfWork" = uow_package.SQLAlchemyUnitOfWork(),
-        notifications: "AbstractNotification" = None,
-        publish: tp.Callable = redis_eventpublisher.publish
+    start_orm: bool = True,
+    uow: "AbstractUnitOfWork" = uow_package.GenericUnitOfWork(),
+    notifications: "AbstractNotification" = None,
+    publish: tp.Callable = redis_eventpublisher.publish,
 ) -> message_bus.MessageBus:
-
     if notifications is None:
         notifications = MemoryNotification()
 
@@ -40,7 +49,7 @@ def bootstrap(
     dependencies: dict = {
         "uow": uow,
         "notifications": notifications,
-        "publish": publish
+        "publish": publish,
     }
     injected_event_handlers: dict[tp.Type["AbstractEvent"], list[tp.Callable]] = {
         event_type: [
@@ -55,12 +64,12 @@ def bootstrap(
 
     injected_query_handlers: dict[tp.Type["AbstractQuery"], tp.Callable] = {
         query_type: inject_dependencies(handler, dependencies)
-        for query_type, handler in sqlalchemy_query_handlers.QUERY_HANDLERS.items()
+        for query_type, handler in handlers.QUERY_HANDLERS.items()
     }
 
     return message_bus.MessageBus(
         uow=uow,
         event_handlers=injected_event_handlers,
         command_handlers=injected_command_handlers,
-        query_handlers=injected_query_handlers
+        query_handlers=injected_query_handlers,
     )

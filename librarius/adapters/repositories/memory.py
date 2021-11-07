@@ -7,11 +7,11 @@ from librarius.adapters.repositories import AbstractRepository
 if tp.TYPE_CHECKING:
     from librarius.types import Reference
     from librarius.domain.models import Entity
-    from librarius.adapters.repository_contexts import MemoryRepositoryContext
+    from librarius.adapters.repositories.contexts import MemoryRepositoryContext
 
 
 class MemoryRepository(AbstractRepository):
-    name: str = "memory"
+    name: tp.ClassVar[str] = "memory"
 
     def __init__(self, context: "MemoryRepositoryContext"):
         super().__init__(context)

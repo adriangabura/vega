@@ -1,37 +1,113 @@
 import typing as tp
 import logging
-from librarius.domain import commands
+from librarius.service_layer.handlers import AbstractCommandHandler
+from librarius.domain.messages import commands
 from librarius.domain import models
+from librarius.service_layer import ensure
+from librarius.service_layer.ensure import exceptions
 
 if tp.TYPE_CHECKING:
-    from librarius.types import CommandHandler
-    from librarius.service_layer.uow import AbstractUnitOfWork
+    from sqlalchemy.orm import Session
+    from librarius.domain.messages import AbstractCommand
 
 logger = logging.getLogger(__name__)
 
 
-def add_author(cmd: "commands.AddAuthor", uow: "AbstractUnitOfWork"):
-    with uow:
+class CreateAuthorHandler(AbstractCommandHandler[commands.CreateAuthor]):
+    def __call__(self, cmd: "commands.CreateAuthor"):
+        with self.uow:
+            author = self.uow.repositories.authors.find_by_uuid(cmd.author_uuid)
+            if author is None:
+                author = models.Author(uuid=cmd.author_uuid, name=cmd.name)
+                self.uow.repositories.authors.add(author)
+            self.uow.commit()
+
+
+class CreateSeriesHandler(AbstractCommandHandler[commands.CreateSeries]):
+    def __call__(self, cmd: "commands.CreateSeries"):
+        with self.uow:
+            series = self.uow.repositories.series.find_by_uuid(cmd.series_uuid)
+            if series is not None:
+                logger.warning("Series exists!")
+            else:
+                series = models.Series(uuid=cmd.series_uuid, name=cmd.series_name)
+                self.uow.repositories.series.add(series)
+            self.uow.commit()
+            # Consider returns!
+
+
+class AddAuthorToPublicationHandler(
+    AbstractCommandHandler[commands.AddAuthorToPublication]
+):
+    def __call__(self, cmd: "commands.AddAuthorToPublication"):
+        with self.uow:
+            publication = self.uow.repositories.publications.find_by_uuid(
+                cmd.author_uuid
+            )
+
+            if publication is not None:
+                author = self.uow.repositories.authors.find_by_uuid(cmd.author_uuid)
+                if author is None:
+                    author = models.Author(uuid=cmd.author_uuid, name=cmd.author_name)
+
+                publication.add_author(author)
+
+                # Maybe return result?
+            else:
+                pass
+                # Maybe return result?
+            self.uow.commit()
+
+
+class AddPublicationHandler(AbstractCommandHandler[commands.CreatePublication]):
+    def __call__(self, cmd: "commands.CreatePublication"):
+        with self.uow:
+            publication = self.uow.repositories.publications.find_by_uuid(
+                cmd.publication_uuid
+            )
+
+            if publication is None:
+                publication = models.Publication(
+                    title=cmd.title, uuid=cmd.publication_uuid
+                )
+            self.uow.repositories.publications.add(publication)
+
+            self.uow.commit()
+
+            # Consider returning results!!!
+
+
+class RemovePublicationHandler(AbstractCommandHandler[commands.RemovePublication]):
+    def __call__(self, cmd: "commands.RemovePublication"):
         pass
 
 
-def add_publication(cmd: "commands.AddPublication", uow: "AbstractUnitOfWork"):
-    with uow:
-        #publication = uow.repositories.publication.find(cmd.uuid)
-        #if publication is None:
-        #    publication = models.Publication()
-        #    uow.repositories.publication.add(publication)
-        publication = models.Publication(title=cmd.title, uuid=cmd.uuid)
-        publication.add_publication()
-        uow.repositories.publications.add(publication)
-        uow.commit()
+class AddPublicationToSeriesHandler(
+    AbstractCommandHandler[commands.AddPublicationToSeries]
+):
+    def __call__(self, cmd: "commands.AddPublicationToSeries"):
+        with self.uow:
+            series = self.uow.repositories.series.find_by_uuid(cmd.series_uuid)
+            if series is not None:
+                publication = self.uow.repositories.publications.find_by_uuid(
+                    cmd.publication_uuid
+                )
+                if publication is not None:
+                    series.add_publication(publication)
+                else:
+                    logger.warning("No such publication exists!")
+
+            self.uow.commit()
+            # Consider returning results!
 
 
-def remove_publication(cmd: "commands.RemovePublication", uow: "AbstractUnitOfWork"):
-    pass
-
-
-COMMAND_HANDLERS: dict[tp.Type["commands.AbstractCommand"], "CommandHandler"] = {
-    commands.AddPublication: add_publication,
-    commands.RemovePublication: remove_publication
+COMMAND_HANDLERS: tp.Mapping[
+    tp.Type["AbstractCommand"], tp.Type["AbstractCommandHandler"]
+] = {
+    commands.CreateAuthor: CreateAuthorHandler,
+    commands.CreatePublication: AddPublicationHandler,
+    commands.RemovePublication: RemovePublicationHandler,
+    commands.AddAuthorToPublication: AddAuthorToPublicationHandler,
+    commands.CreateSeries: CreateSeriesHandler,
+    commands.AddPublicationToSeries: AddPublicationToSeriesHandler,
 }
