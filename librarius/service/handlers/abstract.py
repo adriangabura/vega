@@ -10,7 +10,7 @@ from librarius.domain.messages import (
 if tp.TYPE_CHECKING:
     from librarius.domain.messages import AbstractCommand, AbstractQuery, AbstractEvent
     from librarius.domain.models import Entity
-    from librarius.service_layer.uow import TAbstractUnitOfWork
+    from librarius.service.uow import TAbstractUnitOfWork
 
 TAbstractHandler = tp.TypeVar("TAbstractHandler", bound="AbstractHandler")
 

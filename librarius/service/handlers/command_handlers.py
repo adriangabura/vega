@@ -1,10 +1,10 @@
 import typing as tp
 import logging
-from librarius.service_layer.handlers import AbstractCommandHandler
+from librarius.service.handlers import AbstractCommandHandler
 from librarius.domain.messages import commands
 from librarius.domain import models
-from librarius.service_layer import ensure
-from librarius.service_layer.ensure import exceptions
+from librarius.service import ensure
+from librarius.service.ensure import exceptions
 
 if tp.TYPE_CHECKING:
     from sqlalchemy.orm import Session

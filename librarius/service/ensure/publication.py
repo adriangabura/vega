@@ -3,12 +3,12 @@ This module contains preconditions that we apply to our handlers.
 """
 
 import typing as tp
-from librarius.service_layer.ensure import exceptions
+from librarius.service.ensure import exceptions
 from librarius.domain.models import Publication
 
 if tp.TYPE_CHECKING:
     from sqlalchemy.orm import Session
-    from librarius.service_layer.uow import AbstractUnitOfWork
+    from librarius.service.uow import AbstractUnitOfWork
     from librarius.domain.messages import AbstractMessage
 
 

@@ -5,7 +5,7 @@ import pytest
 from sqlalchemy import text
 
 from librarius.domain.models import Publication
-from librarius.service_layer.uow.implementation import GenericUnitOfWork
+from librarius.service.uow.implementation import GenericUnitOfWork
 
 if tp.TYPE_CHECKING:
     from sqlalchemy.orm import Session

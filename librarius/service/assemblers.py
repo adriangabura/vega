@@ -1,4 +1,4 @@
-from librarius.service_layer.dto import AuthorDto
+from librarius.service.dto import AuthorDto
 from librarius.domain import models
 
 

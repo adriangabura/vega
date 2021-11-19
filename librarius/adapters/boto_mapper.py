@@ -10,7 +10,7 @@ from boto3.exceptions import ResourceNotExistsError
 from botocore.exceptions import ClientError
 
 from librarius.config.utils import TRegions
-from librarius.service_layer.dto import FileUploadDto
+from librarius.service.dto import FileUploadDto
 
 logger = logging.getLogger(__name__)
 

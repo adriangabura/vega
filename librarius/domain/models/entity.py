@@ -40,5 +40,5 @@ class Entity:
             if self._get_repr_attribute(attribute) is not None
         ]
         return (
-            f"{self.__class__.__name__}({', '.join(attributes)})"  # To check the above
+            f"{self.__class__.__name__}({', '.join(attributes)})"  # TODO check the above
         )

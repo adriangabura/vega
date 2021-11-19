@@ -6,7 +6,7 @@ from boto3 import Session
 
 from librarius.config import BasicConfig
 from librarius.adapters import boto_mapper
-from librarius.service_layer.dto import FileUploadDto
+from librarius.service.dto import FileUploadDto
 
 
 @pytest.fixture(scope="session")

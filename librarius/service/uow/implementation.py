@@ -1,12 +1,12 @@
 import typing as tp
-from librarius.service_layer.uow import AbstractUnitOfWork
+from librarius.service.uow import AbstractUnitOfWork
 from librarius.adapters.utils import (
     DEFAULT_REPOSITORY_CONTEXT_FACTORY,
     DEFAULT_REPOSITORY_FACTORY,
 )
 
 if tp.TYPE_CHECKING:
-    # from librarius.service_layer.uow.abstract import TAbstractUnitOfWork
+    # from librarius.service.uow.abstract import TAbstractUnitOfWork
     from librarius.adapters.repositories.abstract import AbstractRepository
     from librarius.adapters.repositories.contexts import AbstractContextMaker
     from librarius.adapters.repositories.contexts import AbstractRepositoryContext

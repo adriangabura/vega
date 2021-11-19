@@ -7,13 +7,13 @@ import logging
 from sqlalchemy.orm import clear_mappers
 
 from librarius import bootstrap
-from librarius.service_layer.uow import GenericUnitOfWork
+from librarius.service.uow import GenericUnitOfWork
 from librarius.domain.messages import commands, queries
 from librarius.domain.exceptions import SkipMessage
 from librarius.domain import models
 
 if tp.TYPE_CHECKING:
-    from librarius.service_layer.message_bus import MessageBus
+    from librarius.service.message_bus import MessageBus
     from librarius.adapters.repositories.contexts import SQLAlchemyContextMaker
 
 logger = logging.getLogger(__name__)

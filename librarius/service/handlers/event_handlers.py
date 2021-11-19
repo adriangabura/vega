@@ -1,7 +1,7 @@
 import typing as tp
 import logging
 from librarius.domain.messages import events, AbstractEvent
-from librarius.service_layer.handlers import AbstractEventHandler
+from librarius.service.handlers import AbstractEventHandler
 
 logger = logging.getLogger(__name__)
 

@@ -3,8 +3,8 @@ import logging
 
 from librarius.domain.models import Publication, Author, Series
 from librarius.domain.messages import queries, AbstractQuery
-from librarius.service_layer.handlers import AbstractQueryHandler
-from librarius.service_layer.uow import GenericUnitOfWork
+from librarius.service.handlers import AbstractQueryHandler
+from librarius.service.uow import GenericUnitOfWork
 
 if tp.TYPE_CHECKING:
     from sqlalchemy.orm import Session

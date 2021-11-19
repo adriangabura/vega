@@ -7,7 +7,7 @@ from librarius.domain.messages import (
     AbstractCommand,
     AbstractQuery,
 )
-from librarius.service_layer.uow import AbstractUnitOfWork
+from librarius.service.uow import AbstractUnitOfWork
 from librarius.domain.exceptions import SkipMessage
 
 logger = logging.getLogger(__name__)
