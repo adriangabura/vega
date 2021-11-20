@@ -22,7 +22,7 @@ def sqlite_session_factory(in_memory_sqlite_db):
     yield sessionmaker(bind=in_memory_sqlite_db)
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 def mappers():
     start_mappers()
     yield

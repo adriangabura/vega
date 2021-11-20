@@ -7,6 +7,10 @@ name = "pypi"
 sqlalchemy = {version = "~=1.4.27", extras = ["mypy"]}
 python-dotenv = "~=0.19.2"
 boto3 = "~=1.20.8"
+casbin = "*"
+uvicorn = {extras = ["standard"], version = "*"}
+fastapi = "*"
+fastapi-authz = "*"
 
 [dev-packages]
 pytest = "~=6.2.5"
