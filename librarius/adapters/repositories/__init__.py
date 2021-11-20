@@ -1,1 +1,1 @@
-
+from librarius.adapters.repositories.publications import PublicationsRepository
