@@ -17,10 +17,10 @@ def create_fastapi(**kwargs) -> FastAPI:
 
 
 _app = create_fastapi(middlewares=[
-    {
-        "middleware_class": CasbinMiddleware,
-        "enforcer": casbin.Enforcer()
-    }
+    # {
+    #     "middleware_class": CasbinMiddleware,
+    #     "enforcer": casbin.Enforcer()
+    # }
 ])
 
 

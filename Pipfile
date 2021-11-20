@@ -11,6 +11,7 @@ casbin = "*"
 uvicorn = {extras = ["standard"], version = "*"}
 fastapi = "*"
 fastapi-authz = "*"
+requests = "*"
 
 [dev-packages]
 pytest = "~=6.2.5"
