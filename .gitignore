@@ -3,4 +3,4 @@
 .idea
 __pycache__
 .mypy_cache
-librarius/config/enforcer.py
+/librarius/config/enforcer.py
