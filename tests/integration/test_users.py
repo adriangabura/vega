@@ -20,10 +20,8 @@ def test_create_super_user(sqlite_session_factory, fastapi_test_client: "TestCli
     repo.add(u1)
     repo.context.session.commit()
 
-    fastapi_test_client.put("/roles/users_admin", data={"user": "superuser"}, auth=('root', 'default_password'))
-    fastapi_test_client.put("/roles/groups_admin", data={"user": "superuser"}, auth=('root', 'default_password'))
-    fastapi_test_client.put("/roles/policies_admin", data={"user": "superuser"}, auth=('root', 'default_password'))
-    fastapi_test_client.put("/roles/roles_admin", data={"user": "superuser"}, auth=('root', 'default_password'))
+    fastapi_test_client.put("/roles/supergroup_role", data={"user": "superuser"}, auth=('root', 'default_password'))
+
 
 
     # p1 = models.Publication(title="Something")
