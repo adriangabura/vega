@@ -9,7 +9,7 @@ __CASBIN_POLICY__ = pathlib.Path(__file__).parent / "test.csv"
 e = casbin.Enforcer(__CASBIN_MODEL__.__str__(), __CASBIN_POLICY__.__str__())
 e.add_named_domain_matching_func("g", util.key_match2)
 
-sm = e.enforce("root", "/login", "GET", "domain1")
+sm = e.enforce("user2", "/users/54", "GET", "domainh")
 print(sm)
 #e.delete_role("policies_admin")
 #e.remove_policy("policies_admin", "/policies/*", "*")

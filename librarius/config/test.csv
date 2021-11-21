@@ -1,13 +1,11 @@
-p, *, /login, /*, /*
-p, *, /, GET, /*
-p, root_role, *, *, *
-p, superadmin_users_role, /users/{id}/, *, *
-p, superadmin_groups_role, /groups/*, *, *
-p, superadmin_policies_role, /policies/*, *, *
-p, superadmin_roles_role, /roles/*, *, *
-g, root, root_role, *
+p, role_c, /users/{id}, GET, domain
+p, role_b, /users/{id}, GET, *
+p, superadmin_users_role, /users/{id}, *, *
+p, superadmin_groups_role, /groups/{id}, *, *
+p, superadmin_policies_role, /policies/{id}, *, *
+p, superadmin_roles_role, /roles/{id}, *, *
 g, supergroup_role, superadmin_users_role, *
 g, supergroup_role, superadmin_groups_role, *
 g, supergroup_role, superadmin_policies_role, *
 g, supergroup_role, superadmin_roles_role, *
-g, superuser, supergroup, *
+g, user2, role_b, *
