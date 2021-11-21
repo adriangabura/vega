@@ -4,8 +4,8 @@ import pytest
 import casbin
 
 
-__CASBIN_MODEL__ = pathlib.Path(__file__).parent / "rbac_model.conf"
-__CASBIN_POLICY__ = pathlib.Path(__file__).parent / "rbac_policy.csv"
+__CASBIN_MODEL__ = pathlib.Path(__file__).parent.parent.parent / "librarius" / "config" / "rbac_model.conf"
+__CASBIN_POLICY__ = pathlib.Path(__file__).parent.parent.parent / "librarius" / "config" / "rbac_policy.csv"
 
 
 @pytest.fixture
