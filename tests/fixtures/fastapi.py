@@ -22,7 +22,7 @@ def fastapi_create_app(casbin_enforcer, basic_auth) -> "FastAPI":
             },
             {
                 "middleware_class": AuthenticationMiddleware,
-                "backend": basic_auth
+                "backend": basic_auth()
             }
         ]
     )

@@ -1,15 +1,11 @@
-p, alice, /dataset1/*, GET
-p, alice, /dataset1/resource1, POST
-p, bob, /dataset2/resource1, *
-p, bob, /dataset2/resource2, GET
-p, bob, /dataset2/folder1/*, POST
-p, dataset1_admin, /dataset1/*, *
 p, users_admin, /users/*, *
 p, groups_admin, /groups/*, *
 p, *, /login, *
-
 p, anonymous, /, GET
-
-g, cathy, dataset1_admin
+p, superusers_admin, /users/*, *
+p, policies_admin, /policies/*, *
+p, roles_admin, /roles/*, *
 g, root, users_admin
 g, root, groups_admin
+g, root, policies_admin
+g, root, roles_admin
