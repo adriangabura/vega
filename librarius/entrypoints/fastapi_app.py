@@ -13,7 +13,7 @@ def create_fastapi(**kwargs) -> FastAPI:
     for middleware in middlewares:
         app.add_middleware(**middleware)
 
-    return FastAPI()
+    return app
 
 
 def start_app(app: FastAPI):
