@@ -48,6 +48,15 @@ publications: Table = Table(
     Column("date_published", Date),
 )
 
+users: Table = Table(
+    "users",
+    metadata,
+    Column("uuid", String(255), primary_key=True, autoincrement=False),
+    Column("name", String(255)),
+    Column("date_added", DateTime),
+    Column("date_modified", DateTime),
+)
+
 series_publications: Table = Table(
     "series_publications",
     metadata,
@@ -66,6 +75,12 @@ publications_authors: Table = Table(
 def start_mappers():
     logger.info("Starting mappers")
     mapper_registry = registry()
+
+    # Users
+    users_mapper = mapper_registry.map_imperatively(
+        models.User,
+        users
+    )
 
     # Authors
     authors_mapper = mapper_registry.map_imperatively(

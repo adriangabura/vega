@@ -3,3 +3,4 @@ from .entity import Entity
 from .author import Author
 from .publication import Publication
 from .series import Series
+from .user import User
