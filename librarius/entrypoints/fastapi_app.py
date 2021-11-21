@@ -16,15 +16,7 @@ def create_fastapi(**kwargs) -> FastAPI:
     return FastAPI()
 
 
-_app = create_fastapi(middlewares=[
-    # {
-    #     "middleware_class": CasbinMiddleware,
-    #     "enforcer": casbin.Enforcer()
-    # }
-])
-
-
-def start_app(app: FastAPI = _app):
+def start_app(app: FastAPI):
     app.include_router(users_router)
 
     @app.get("/")

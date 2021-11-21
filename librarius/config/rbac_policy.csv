@@ -1,0 +1,15 @@
+p, alice, /dataset1/*, GET
+p, alice, /dataset1/resource1, POST
+p, bob, /dataset2/resource1, *
+p, bob, /dataset2/resource2, GET
+p, bob, /dataset2/folder1/*, POST
+p, dataset1_admin, /dataset1/*, *
+p, users_admin, /users/*, *
+p, groups_admin, /groups/*, *
+p, *, /login, *
+
+p, anonymous, /, GET
+
+g, cathy, dataset1_admin
+g, root, users_admin
+g, root, groups_admin
