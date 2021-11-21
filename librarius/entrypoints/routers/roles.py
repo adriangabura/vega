@@ -11,6 +11,11 @@ from librarius.entrypoints.app_enforcer import get_enforcer
 router = APIRouter(tags=["policies"])
 
 
+@router.get("roles/")
+def gets():
+    return 423423
+
+
 @router.put("/roles/{role_name}", status_code=HTTPStatus.NO_CONTENT)
 def put_role_for_user(role_name: str, user: str = Form(...)):
     """Assign a role to a user"""
