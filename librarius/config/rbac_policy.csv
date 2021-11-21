@@ -9,3 +9,4 @@ g, root, users_admin
 g, root, groups_admin
 g, root, policies_admin
 g, root, roles_admin
+g, superuser, users_admin

@@ -1,8 +1,7 @@
+p, *, /login, *
+p, *, /, GET
 p, users_admin, /users/*, *
 p, groups_admin, /groups/*, *
-p, *, /login, *
-p, anonymous, /, GET
-p, superusers_admin, /users/*, *
 p, policies_admin, /policies/*, *
 p, roles_admin, /roles/*, *
 g, root, users_admin
