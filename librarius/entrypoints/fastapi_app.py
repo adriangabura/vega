@@ -2,7 +2,7 @@ import casbin
 from fastapi import FastAPI
 from fastapi_authz import CasbinMiddleware
 
-from librarius.entrypoints.routers import users_router
+from librarius.entrypoints.routers import users_router, policies_router
 
 
 def create_fastapi(**kwargs) -> FastAPI:
@@ -18,6 +18,7 @@ def create_fastapi(**kwargs) -> FastAPI:
 
 def start_app(app: FastAPI):
     app.include_router(users_router)
+    app.include_router(policies_router)
 
     @app.get("/")
     async def read_main():
