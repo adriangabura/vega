@@ -8,15 +8,15 @@ router = APIRouter(tags=["policy"])
 
 
 @router.get("/policy/")
-def get_users():
+def get_policy():
     return [{"a": "b"}]
 
 
 @router.put("/policy/{policy_name}")
-def post_users():
+def put_policy(policy_name: str):
     return True
 
 
 @router.delete("/policy/{policy_name}")
-def delete_user():
+def delete_policy(policy_name: str):
     return True

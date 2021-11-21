@@ -1,36 +1,12 @@
-{
- "cells": [
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {
-    "collapsed": true
-   },
-   "outputs": [],
-   "source": [
-    ""
-   ]
-  }
- ],
- "metadata": {
-  "kernelspec": {
-   "display_name": "Python 3",
-   "language": "python",
-   "name": "python3"
-  },
-  "language_info": {
-   "codemirror_mode": {
-    "name": "ipython",
-    "version": 2
-   },
-   "file_extension": ".py",
-   "mimetype": "text/x-python",
-   "name": "python",
-   "nbconvert_exporter": "python",
-   "pygments_lexer": "ipython2",
-   "version": "2.7.6"
-  }
- },
- "nbformat": 4,
- "nbformat_minor": 0
-}
+import casbin
+import pathlib
+
+__CASBIN_MODEL__ = pathlib.Path(__file__).parent / "rbac_model.conf"
+__CASBIN_POLICY__ = pathlib.Path(__file__).parent / "rbac_policy.csv"
+
+e = casbin.Enforcer(__CASBIN_MODEL__.__str__(), __CASBIN_POLICY__.__str__())
+
+e.add_policy("superusers_admin", "/users/*", "*")
+e.add_role_for_user("root3", "superusers_admin")
+
+e.save_policy()
