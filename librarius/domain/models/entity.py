@@ -9,6 +9,9 @@ if tp.TYPE_CHECKING:
 
 
 class Entity:
+    """Entity/Resource base class
+    _repr_attributes are the attributes shown in repr
+    """
     _repr_attributes: list[str] = ["uuid", "date_added", "date_modified"]
 
     @classmethod
