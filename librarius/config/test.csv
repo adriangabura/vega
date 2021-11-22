@@ -1,3 +1,4 @@
+p, root, /*, *, *
 p, role_c, /users/{id}, GET, domain
 p, role_b, /users/{id}, GET, *
 p, superadmin_users_role, /users/{id}, *, *
@@ -8,4 +9,4 @@ g, supergroup_role, superadmin_users_role, *
 g, supergroup_role, superadmin_groups_role, *
 g, supergroup_role, superadmin_policies_role, *
 g, supergroup_role, superadmin_roles_role, *
-g, user2, role_b, *
+g, user2, superadmin_users_role, *
