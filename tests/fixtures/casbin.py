@@ -25,7 +25,8 @@ def casbin_policy_blank() -> None:
 
 
 @pytest.fixture
-def casbin_enforcer():
+def casbin_enforcer() -> casbin.Enforcer:
+    """Returns a Casbin Enforcer"""
     enf = casbin.Enforcer(__CASBIN_MODEL__.__str__(), __CASBIN_POLICY__.__str__())
     enf.add_named_domain_matching_func("g", util.key_match2_func)
     return enf
@@ -52,5 +53,5 @@ def supergroup_role(casbin_enforcer: casbin.Enforcer) -> None:
     ce.add_grouping_policy("supergroup_role", "superadmin_all_policies_role", "*")
     ce.add_grouping_policy("supergroup_role", "superadmin_roles_role", "*")
     ce.add_grouping_policy("supergroup_role", "superadmin_all_roles_role", "*")
-    ce.add_role_for_user("superadmin", "supergroup_role")
+    ce.add_role_for_user_in_domain("superadmin", "supergroup_role", "*")
     ce.save_policy()

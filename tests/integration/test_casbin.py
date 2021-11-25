@@ -7,5 +7,7 @@ import pytest
 pytestmark = pytest.mark.usefixtures("casbin_policy_blank")
 
 
-def test_supergroup_role(supergroup_role):
-    pass
+@pytest.mark.usefixtures("supergroup_role")
+def test_supergroup_role(casbin_enforcer):
+    ce = casbin_enforcer
+    #assert ce.enforce("superadmin", "/users/2121", "GET", "domain")
