@@ -24,6 +24,7 @@ def casbin_policy_blank() -> None:
             file.write("p, root, /*, *, *")
 
 
+@pytest.mark.usefixtures("casbin_policy_blank")
 @pytest.fixture
 def casbin_enforcer() -> casbin.Enforcer:
     """Returns a Casbin Enforcer"""
