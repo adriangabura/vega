@@ -6,7 +6,7 @@ from casbin import util
 
 
 __CASBIN_MODEL__ = pathlib.Path(__file__).parent.parent.parent / "librarius" / "config" / "rbac_model.conf"
-__CASBIN_POLICY__ = pathlib.Path(__file__).parent.parent.parent / "librarius" / "config" / "mammamia.csv"
+__CASBIN_POLICY__ = pathlib.Path(__file__).parent.parent.parent / "librarius" / "config" / "rbac_policy.csv"
 
 
 @pytest.fixture
@@ -17,6 +17,10 @@ def casbin_policy_blank() -> None:
             file.write("p, root, /*, *, *")
     else:
         with open(__CASBIN_POLICY__, 'x') as file:
+            file.write("p, root, /*, *, *")
+    yield
+    if __CASBIN_POLICY__.exists():
+        with open(__CASBIN_POLICY__, 'w') as file:
             file.write("p, root, /*, *, *")
 
 
@@ -31,6 +35,7 @@ def casbin_enforcer():
 def supergroup_role(casbin_enforcer: casbin.Enforcer) -> None:
     """Creates dynamically a superuser role."""
     ce = casbin_enforcer
+    ce.add_policy("*", "/login", "*", "*")
     ce.add_policy("superadmin_users_role", "/users/{id}", "*", "*")
     ce.add_policy("superadmin_all_users_role", "/users/", "*", "*")
     ce.add_policy("superadmin_groups_role", "/groups/{id}", "*", "*")
