@@ -20,6 +20,7 @@ def start_app(app: FastAPI):
     app.include_router(routers.users_router)
     app.include_router(routers.policies_router)
     app.include_router(routers.roles_router)
+    app.include_router(routers.resources_router)
 
     @app.get("/")
     async def read_main():

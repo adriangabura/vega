@@ -7,9 +7,11 @@ from pydantic import BaseModel
 
 from fastapi import APIRouter, Depends, HTTPException, status, Response, Form
 from librarius.entrypoints.app_enforcer import get_enforcer
+from librarius.bootstrap import bootstrap
 
-router = APIRouter(tags=["policies"])
+router = APIRouter(tags=["roles"])
 
+bus = bootstrap()
 
 @router.get("roles/")
 def gets():

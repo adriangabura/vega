@@ -1,6 +1,7 @@
 import typing as tp
 import logging
 
+from librarius.domain import models
 from librarius.domain.models import Publication, Author, Series
 from librarius.domain.messages import queries, AbstractQuery
 from librarius.service.handlers import AbstractQueryHandler
@@ -27,6 +28,15 @@ class RetrieveAllPublicationsHandler(AbstractQueryHandler[queries.AllPublication
                     return results
         except TypeError as error:
             logger.exception(error)
+
+
+class RetrieveResourceByName(AbstractQueryHandler[queries.ResourceByName]):
+    def __call__(self, query: "queries.ResourceByName"):
+        with self.uow:
+            session: "Session" = self.uow.context.session
+            result: "models.Resource" = session.query(models.Resource).filter_by(name=query.resource_name).first()
+            session.expunge_all()
+            return result
 
 
 class RetrieveAuthorByUuid(AbstractQueryHandler[queries.AuthorByUuid]):
@@ -76,6 +86,7 @@ class RetrievePublicationByUuid(AbstractQueryHandler[queries.PublicationByUuid])
 QUERY_HANDLERS: tp.Mapping[
     tp.Type["AbstractQuery"], tp.Type["AbstractQueryHandler"]
 ] = {
+    queries.ResourceByName: RetrieveResourceByName,
     queries.AllPublications: RetrieveAllPublicationsHandler,
     queries.PublicationByUuid: RetrievePublicationByUuid,
     queries.AuthorByUuid: RetrieveAuthorByUuid,

@@ -56,6 +56,9 @@ class DefaultRepositoryCollection(
         self.inject_context(PublicationsRepository)
         self.inject_context(AuthorsRepository)
         self.inject_context(SeriesRepository)
+        self.inject_context(UsersRepository)
+        self.inject_context(RolesRepository)
+        self.inject_context(ResourcesRepository)
 
     def _asdict(self) -> dict[str, AbstractRepository]:
         return {i.name: self.__dict__[i.name] for i in fields(self)}

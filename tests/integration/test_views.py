@@ -19,46 +19,45 @@ if tp.TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-# @pytest.fixture
-# def sqlite_bus(sql_alchemy_context_factory: "SQLAlchemyContextMaker"):
-#     bus = bootstrap.bootstrap(
-#         start_orm=True,
-#         uow=GenericUnitOfWork(
-#             context_factory=sql_alchemy_context_factory,
-#         ),
-#         notifications=mock.Mock(),
-#         publish=lambda *args: None,
-#     )
-#     yield bus
-#     clear_mappers()
+pytestmark = pytest.mark.usefixtures("casbin_policy_blank")
 
 
-@pytest.fixture
-def generate_uuids():
-    class IdGen:
-        def __init__(self):
-            self.publication1 = str(uuid4())
-            self.publication2 = str(uuid4())
-            self.author1 = str(uuid4())
-            self.author2 = str(uuid4())
-            self.series1 = str(uuid4())
-            self.series2 = str(uuid4())
-
-    return IdGen()
-
-
-def test_create_publication(sqlite_bus: "MessageBus", generate_uuids):
-    publication_uuid = generate_uuids.publication1
+def test_resources_and_roles(sqlite_bus):
+    resource_uuid = str(uuid4())
+    role_uuid = str(uuid4())
     sqlite_bus.handle(
-        commands.CreatePublication(
-            publication_uuid=publication_uuid, title="Test Publication Title"
-        )
+        commands.CreateResource(name="/users/", resource_uuid=resource_uuid)
     )
-    result: "models.Publication" = sqlite_bus.handle(
-        queries.PublicationByUuid(publication_uuid)
+    sqlite_bus.handle(
+        commands.CreateRole(name="driver", role_uuid=role_uuid, resource_names=["/users/"])
     )
 
-    assert publication_uuid == result.uuid
+# @pytest.fixture
+# def generate_uuids():
+#     class IdGen:
+#         def __init__(self):
+#             self.publication1 = str(uuid4())
+#             self.publication2 = str(uuid4())
+#             self.author1 = str(uuid4())
+#             self.author2 = str(uuid4())
+#             self.series1 = str(uuid4())
+#             self.series2 = str(uuid4())
+#
+#     return IdGen()
+
+
+# def test_create_publication(sqlite_bus: "MessageBus", generate_uuids):
+#     publication_uuid = generate_uuids.publication1
+#     sqlite_bus.handle(
+#         commands.CreatePublication(
+#             publication_uuid=publication_uuid, title="Test Publication Title"
+#         )
+#     )
+#     result: "models.Publication" = sqlite_bus.handle(
+#         queries.PublicationByUuid(publication_uuid)
+#     )
+#
+#     assert publication_uuid == result.uuid
 
 
 # def test_add_nonexistent_author_to_publication(

@@ -1,4 +1,6 @@
 import typing as tp
+import uuid
+
 import pytest
 from librarius.adapters import repositories
 from librarius.domain import models
@@ -8,19 +10,38 @@ if tp.TYPE_CHECKING:
     from starlette.testclient import TestClient
     from sqlalchemy.orm import Session
 
-pytestmark = pytest.mark.usefixtures("mappers")
+pytestmark = pytest.mark.usefixtures("casbin_policy_blank")
 
 
-def test_create_super_user(sqlite_session_factory, fastapi_test_client: "TestClient"):
-    session: "Session" = sqlite_session_factory()
-    context = SQLAlchemyRepositoryContext(session)
-    repo = repositories.UsersRepository(context)
+def test_create_superuser(sqlite_session_factory, fastapi_test_client: "TestClient"):
+    current_user = {
+        "username": "root",
+        "password": "default_password"
+    }
 
-    u1 = models.User(name="superuser")
-    repo.add(u1)
-    repo.context.session.commit()
+    fatc = fastapi_test_client
 
-    fastapi_test_client.put("/roles/supergroup_role", data={"user": "superuser"}, auth=('root', 'default_password'))
+    data = {
+        "username": current_user.get("username"),
+        "password": current_user.get("password"),
+        "resource_name": "/users/321",
+        "resource_uuid": str(uuid.uuid4())
+    }
+
+    fatc.post("/resources/", data=data, auth=('root', 'default_password'))
+
+
+
+# def test_create_super_user(sqlite_session_factory, fastapi_test_client: "TestClient"):
+#     session: "Session" = sqlite_session_factory()
+#     context = SQLAlchemyRepositoryContext(session)
+#     repo = repositories.UsersRepository(context)
+#
+#     u1 = models.User(name="superuser")
+#     repo.add(u1)
+#     repo.context.session.commit()
+#
+#     fastapi_test_client.put("/roles/supergroup_role", data={"user": "superuser"}, auth=('root', 'default_password'))
 
 
 

@@ -37,7 +37,6 @@ class CreateRoleHandler(AbstractCommandHandler[commands.CreateRole]):
             for resource_name in cmd.resource_names:
                 self.uow.casbin_enforcer.add_policy(cmd.name, resource_name, "*", "*")
             self.uow.casbin_enforcer.save_policy()
-            import pdb; pdb.set_trace()
 
 
 class CreateAuthorHandler(AbstractCommandHandler[commands.CreateAuthor]):
