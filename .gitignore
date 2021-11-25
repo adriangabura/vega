@@ -4,3 +4,4 @@
 __pycache__
 .mypy_cache
 /librarius/config/enforcer.py
+.python-version
