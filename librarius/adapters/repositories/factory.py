@@ -6,6 +6,9 @@ from librarius.adapters.repositories.abstract import AbstractRepository
 from librarius.adapters.repositories.publications import PublicationsRepository
 from librarius.adapters.repositories.authors import AuthorsRepository
 from librarius.adapters.repositories.series import SeriesRepository
+from librarius.adapters.repositories.users import UsersRepository
+from librarius.adapters.repositories.roles import RolesRepository
+from librarius.adapters.repositories.resources import ResourcesRepository
 
 TAbstractRepositoryCollection = tp.TypeVar(
     "TAbstractRepositoryCollection", bound="AbstractRepositoryCollection"
@@ -17,6 +20,9 @@ class AbstractRepositoryCollection(tp.Generic[TAbstractRepositoryCollection], ab
     publications: PublicationsRepository
     authors: AuthorsRepository
     series: SeriesRepository
+    users: UsersRepository
+    roles: RolesRepository
+    resources: ResourcesRepository
 
     def __iter__(self) -> tp.Generator[str, None, None]:
         for key in self._asdict():
@@ -41,6 +47,9 @@ class DefaultRepositoryCollection(
     publications: PublicationsRepository
     authors: AuthorsRepository
     series: SeriesRepository
+    users: UsersRepository
+    roles: RolesRepository
+    resources: ResourcesRepository
 
     def __init__(self, context: AbstractRepositoryContext):
         object.__setattr__(self, "_context", context)

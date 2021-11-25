@@ -4,6 +4,6 @@ from librarius.domain.messages import AbstractCommand
 
 
 @dataclasses.dataclass
-class CreateRole(AbstractCommand["CreateRole"]):
+class CreateResource(AbstractCommand["CreateResource"]):
     name: str
-    role_uuid: str
+    resource_uuid: str

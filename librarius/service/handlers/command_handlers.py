@@ -13,6 +13,23 @@ if tp.TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
+class CreateResourceHandler(AbstractCommandHandler[commands.CreateResource]):
+    def __call__(self, cmd: "commands.CreateResource"):
+        with self.uow:
+            resource = self.uow.context.session.query(models.Resource).filter_by(name=cmd.name).first()
+            if resource is None:
+                resource = models.Resource(uuid=cmd.resource_uuid, name=cmd.name)
+
+
+class CreateRoleHandler(AbstractCommandHandler[commands.CreateRole]):
+    def __call__(self, cmd: "commands.CreateRole"):
+        with self.uow:
+            role = self.uow.repositories.roles.find_by_name(cmd.name)
+            if role is None:
+                role = models.Role(uuid=cmd.role_uuid, name=cmd.name)
+
+
+
 class CreateAuthorHandler(AbstractCommandHandler[commands.CreateAuthor]):
     def __call__(self, cmd: "commands.CreateAuthor"):
         with self.uow:

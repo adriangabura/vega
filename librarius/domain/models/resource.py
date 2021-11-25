@@ -6,12 +6,12 @@ from librarius.domain.models import Entity
 
 if tp.TYPE_CHECKING:
     from librarius.domain.models.publication import Publication
-    from librarius.domain.models.user import User
+    from librarius.domain.models.user import Role
 
 
-class Role(Entity):
+class Resource(Entity):
     _repr_attributes = ["uuid", "date_added", "date_modified", "name"]
-    users: list["User"]
+    roles: list["Role"]
 
     def __init__(
         self,
@@ -22,4 +22,4 @@ class Role(Entity):
     ) -> None:
         super().__init__(uuid=uuid, date_added=date_added, date_modified=date_modified)
         self.name: str = name
-        self.users: list["User"] = []
+        self.roles: list["Role"] = []

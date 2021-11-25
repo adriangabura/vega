@@ -57,6 +57,38 @@ users: Table = Table(
     Column("date_modified", DateTime),
 )
 
+roles: Table = Table(
+    "roles",
+    metadata,
+    Column("uuid", String(255), primary_key=True, autoincrement=False),
+    Column("name", String(255)),
+    Column("date_added", DateTime),
+    Column("date_modified", DateTime),
+)
+
+resources: Table = Table(
+    "resources",
+    metadata,
+    Column("uuid", String(255), primary_key=True, autoincrement=False),
+    Column("name", String(255)),
+    Column("date_added", DateTime),
+    Column("date_modified", DateTime),
+)
+
+user_roles: Table = Table(
+    "user_roles",
+    metadata,
+    Column("user_uuid", String(255), ForeignKey("users.uuid")),
+    Column("role_uuid", String(255), ForeignKey("roles.uuid")),
+)
+
+role_resources: Table = Table(
+    "role_resources",
+    metadata,
+    Column("role_uuid", String(255), ForeignKey("roles.uuid")),
+    Column("resource_uuid", String(255), ForeignKey("resources.uuid")),
+)
+
 series_publications: Table = Table(
     "series_publications",
     metadata,
@@ -79,7 +111,53 @@ def start_mappers():
     # Users
     users_mapper = mapper_registry.map_imperatively(
         models.User,
-        users
+        users,
+        properties={
+            "roles": relationship(
+                "Role",
+                secondary=user_roles,
+                back_populates="users",
+                lazy="joined",
+                collection_class=list
+            )
+        }
+    )
+
+    # Resources
+    resources_mapper = mapper_registry.map_imperatively(
+        models.Resource,
+        resources,
+        properties={
+            "roles": relationship(
+                "Role",
+                secondary=role_resources,
+                back_populates="resources",
+                lazy="joined",
+                collection_class=list
+            ),
+        }
+    )
+
+    # Roles
+    roles_mapper = mapper_registry.map_imperatively(
+        models.Role,
+        roles,
+        properties={
+            "users": relationship(
+                "User",
+                secondary=user_roles,
+                back_populates="roles",
+                lazy="joined",
+                collection_class=list
+            ),
+            "resources": relationship(
+                "Resource",
+                secondary=role_resources,
+                back_populates="roles",
+                lazy="joined",
+                collection_class=list
+            )
+        }
     )
 
     # Authors

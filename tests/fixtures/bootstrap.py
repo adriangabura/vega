@@ -20,7 +20,12 @@ logger = logging.getLogger(__name__)
 
 
 @pytest.fixture
-def sqlite_bus(sql_alchemy_context_factory: "SQLAlchemyContextMaker"):
-    bus = bootstrap.bootstrap(start_orm=True, uow=GenericUnitOfWork(context_factory=sql_alchemy_context_factory),notifications=mock.Mock(),publish=lambda *args: None)
+def sqlite_bus(sql_alchemy_context_factory: "SQLAlchemyContextMaker", casbin_enforcer):
+    bus = bootstrap.bootstrap(
+        start_orm=True,
+        uow=GenericUnitOfWork(context_factory=sql_alchemy_context_factory, casbin_enforcer=casbin_enforcer),
+        notifications=mock.Mock(),
+        publish=lambda *args: None
+    )
     yield bus
     clear_mappers()

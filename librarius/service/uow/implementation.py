@@ -3,9 +3,11 @@ from librarius.service.uow import AbstractUnitOfWork
 from librarius.adapters.utils import (
     DEFAULT_REPOSITORY_CONTEXT_FACTORY,
     DEFAULT_REPOSITORY_FACTORY,
+    DEFAULT_CASBIN_ENFORCER
 )
 
 if tp.TYPE_CHECKING:
+    from casbin import Enforcer
     # from librarius.service.uow.abstract import TAbstractUnitOfWork
     from librarius.adapters.repositories.abstract import AbstractRepository
     from librarius.adapters.repositories.contexts import AbstractContextMaker
@@ -19,15 +21,15 @@ class GenericUnitOfWork(AbstractUnitOfWork["GenericUnitOfWork"]):
         self,
         repository_factory=DEFAULT_REPOSITORY_FACTORY,
         context_factory: "AbstractContextMaker" = DEFAULT_REPOSITORY_CONTEXT_FACTORY,
+        casbin_enforcer: "Enforcer" = DEFAULT_CASBIN_ENFORCER
     ):
-        self.repository_factory: tp.Type[
-            DefaultRepositoryCollection
-        ] = repository_factory
+        self.repository_factory: tp.Type["DefaultRepositoryCollection"] = repository_factory
         self.context_factory = context_factory
+        self.casbin_enforcer = casbin_enforcer
 
     def __enter__(self, *args, **kwargs) -> "GenericUnitOfWork":
         self.context: "AbstractRepositoryContext" = self.context_factory()
-        self.repositories: DefaultRepositoryCollection = self.repository_factory(
+        self.repositories: "DefaultRepositoryCollection" = self.repository_factory(
             self.context
         )
         return self
