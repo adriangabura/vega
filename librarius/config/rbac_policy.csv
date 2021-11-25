@@ -1,12 +1,1 @@
-p, *, /login, *
-p, *, /, GET
-p, root_role, *, *
-p, superadmin_users_role, /users/*, *
-p, superadmin_groups_role, /groups/*, *
-p, superadmin_policies_role, /policies/*, *
-p, superadmin_roles_role, /roles/*, *
-g, root, root_role
-g, supergroup_role, superadmin_users_role
-g, supergroup_role, superadmin_groups_role
-g, supergroup_role, superadmin_policies_role
-g, supergroup_role, superadmin_roles_role
+p, root, /*, *, *
