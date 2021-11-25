@@ -9,6 +9,7 @@ if tp.TYPE_CHECKING:
         AbstractRepositoryContext,
     )
     from librarius.adapters.repositories.factory import AbstractRepositoryCollection
+    from casbin import Enforcer
 
 
 TAbstractUnitOfWork = tp.TypeVar("TAbstractUnitOfWork", bound="AbstractUnitOfWork")
@@ -17,6 +18,7 @@ TAbstractUnitOfWork = tp.TypeVar("TAbstractUnitOfWork", bound="AbstractUnitOfWor
 class AbstractUnitOfWork(abc.ABC, tp.Generic[TAbstractUnitOfWork]):
     repositories: "AbstractRepositoryCollection"
     context: "AbstractRepositoryContext"
+    casbin_enforcer: "Enforcer"
 
     @abc.abstractmethod
     def __init__(

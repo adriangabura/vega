@@ -19,6 +19,8 @@ class CreateResourceHandler(AbstractCommandHandler[commands.CreateResource]):
             resource = self.uow.context.session.query(models.Resource).filter_by(name=cmd.name).first()
             if resource is None:
                 resource = models.Resource(uuid=cmd.resource_uuid, name=cmd.name)
+                self.uow.repositories.resources.add(resource)
+            self.uow.commit()
 
 
 class CreateRoleHandler(AbstractCommandHandler[commands.CreateRole]):
@@ -27,7 +29,15 @@ class CreateRoleHandler(AbstractCommandHandler[commands.CreateRole]):
             role = self.uow.repositories.roles.find_by_name(cmd.name)
             if role is None:
                 role = models.Role(uuid=cmd.role_uuid, name=cmd.name)
-
+                for resource_name in cmd.resource_names:
+                    _resource = self.uow.repositories.resources.find_by_name(name=resource_name)
+                    role.resources.append(_resource)
+                self.uow.repositories.roles.add(role)
+            self.uow.commit()
+            for resource_name in cmd.resource_names:
+                self.uow.casbin_enforcer.add_policy(cmd.name, resource_name, "*", "*")
+            self.uow.casbin_enforcer.save_policy()
+            import pdb; pdb.set_trace()
 
 
 class CreateAuthorHandler(AbstractCommandHandler[commands.CreateAuthor]):
@@ -121,6 +131,8 @@ class AddPublicationToSeriesHandler(
 COMMAND_HANDLERS: tp.Mapping[
     tp.Type["AbstractCommand"], tp.Type["AbstractCommandHandler"]
 ] = {
+    commands.CreateResource: CreateResourceHandler,
+    commands.CreateRole: CreateRoleHandler,
     commands.CreateAuthor: CreateAuthorHandler,
     commands.CreatePublication: AddPublicationHandler,
     commands.RemovePublication: RemovePublicationHandler,

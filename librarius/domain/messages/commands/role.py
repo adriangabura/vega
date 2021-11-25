@@ -7,4 +7,4 @@ from librarius.domain.messages import AbstractCommand
 class CreateRole(AbstractCommand["CreateRole"]):
     name: str
     role_uuid: str
-    resource_uuid: str
+    resource_names: list[str]
