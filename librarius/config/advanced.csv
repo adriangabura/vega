@@ -1,2 +1,0 @@
-p, role_b, /v1/pen/{id}/, GET, *
-g, user2, role_b, *
