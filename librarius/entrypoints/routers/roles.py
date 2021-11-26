@@ -18,6 +18,11 @@ def get_bus():
     return bootstrap(start_orm=False)
 
 
+@router.post("/roles/", status_code=HTTPStatus.NO_CONTENT)
+def post_role():
+    pass
+
+
 @router.put("/roles/{role_name}", status_code=HTTPStatus.NO_CONTENT)
 def put_role_for_user(role_name: str, user: str = Form(...)):
     """Assign a role to a user"""

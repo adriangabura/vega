@@ -56,6 +56,9 @@ def test_create_role(
     from librarius.entrypoints.routers.roles import get_bus
     fastapi_start_app.dependency_overrides[get_bus] = lambda: sqlite_bus
     data = _role_payload()
+    data["resources"] = ["/users/321"]
+
+    fatc.post("/roles/", data=data, auth=('root', 'default_password'))
 
 
 
