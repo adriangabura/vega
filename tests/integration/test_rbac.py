@@ -22,6 +22,15 @@ def _resource_payload() -> dict:
     }
 
 
+def _role_payload():
+    return {
+        "username": "root",
+        "password": "default_password",
+        "role_name": "driver",
+        "role_uuid": str(uuid.uuid4())
+    }
+
+
 def test_create_resource(
         fastapi_start_app,
         fastapi_test_client: "TestClient",
