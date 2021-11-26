@@ -1,4 +1,5 @@
 import typing as tp
+import pathlib
 import pytest
 
 from sqlalchemy import create_engine
@@ -12,9 +13,12 @@ from librarius.adapters.repositories.contexts.sqlalchemy_implementation import (
 
 @pytest.fixture(scope="session")
 def in_memory_sqlite_db():
-    engine = create_engine("sqlite:///test.db")
+    file_name = "sqlite_test.db"
+    engine = create_engine(f"sqlite:///tests/{file_name}")
     metadata.create_all(engine)
-    return engine
+    yield engine
+    path = pathlib.Path(__file__).parent.parent / file_name
+    path.unlink()
 
 
 @pytest.fixture(scope="session")

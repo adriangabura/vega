@@ -30,7 +30,10 @@ def test_create_superuser(sqlite_session_factory, fastapi_start_app, fastapi_tes
         "resource_uuid": str(uuid.uuid4())
     }
 
-    fatc.post("/resources/", data=data, auth=('root', 'default_password'))
+    response = fatc.post("/resources/", data=data, auth=('root', 'default_password'))
+    jsonified = response.json()
+    assert jsonified["resource_name"] == data["resource_name"]
+    assert jsonified["resource_uuid"] == data["resource_uuid"]
 
 
 
