@@ -8,6 +8,10 @@ from pydantic import BaseModel
 from fastapi import APIRouter, Depends, HTTPException, status, Response, Form, Request, Body
 from librarius.entrypoints.app_enforcer import get_enforcer
 from librarius.bootstrap import bootstrap
+from librarius.domain.messages import commands, queries
+
+if tp.TYPE_CHECKING:
+    from librarius.domain import models
 
 router = APIRouter(tags=["roles"])
 
@@ -25,9 +29,14 @@ def post_role(
         password: str = Form(...),
         role_name: str = Form(...),
         role_uuid: str = Form(...),
+        resources: list = Body(...),
         bus=Depends(get_bus)
 ):
-    pass
+    ce = get_enforcer()
+    if ce.enforce(username, request.url.path, request.method):
+        bus.handle(commands.CreateRole(name=role_name, role_uuid=role_uuid, resource_names=resources))
+        # role: "models.Role" = bus.handle(queries.ResourceByName(resource_name=resource_name))
+        # return {"resource_name": resource.name, "resource_uuid": resource.uuid}
 
 
 @router.put("/roles/{role_name}", status_code=HTTPStatus.NO_CONTENT)
