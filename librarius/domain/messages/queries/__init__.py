@@ -4,3 +4,4 @@ from .series import AllSeries, SeriesByUuid
 from .resource import (
     ResourceByName
 )
+from .role import RoleByName

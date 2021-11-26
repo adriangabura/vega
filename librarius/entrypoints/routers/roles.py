@@ -35,8 +35,8 @@ def post_role(
     ce = get_enforcer()
     if ce.enforce(username, request.url.path, request.method):
         bus.handle(commands.CreateRole(name=role_name, role_uuid=role_uuid, resource_names=resources))
-        # role: "models.Role" = bus.handle(queries.ResourceByName(resource_name=resource_name))
-        # return {"resource_name": resource.name, "resource_uuid": resource.uuid}
+        role: "models.Role" = bus.handle(queries.RoleByName(role_name=role_name))
+        return {"role_name": role.name, "role_uuid": role.uuid, "resources": [resource.name for resource in role.resources]}
 
 
 @router.put("/roles/{role_name}", status_code=HTTPStatus.NO_CONTENT)

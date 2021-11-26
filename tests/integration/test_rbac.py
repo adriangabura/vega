@@ -58,7 +58,8 @@ def test_create_role(
     data = _role_payload()
     data["resources"] = ["/users/321"]
 
-    fatc.post("/roles/", data=data, auth=('root', 'default_password'))
+    result = fatc.post("/roles/", data=data, auth=('root', 'default_password'))
+
 
 
 
