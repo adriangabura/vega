@@ -23,8 +23,8 @@ def post_role(
         request: Request,
         username: str = Form(...),
         password: str = Form(...),
-        resource_name: str = Form(...),
-        resource_uuid: str = Form(...),
+        role_name: str = Form(...),
+        role_uuid: str = Form(...),
         bus=Depends(get_bus)
 ):
     pass
