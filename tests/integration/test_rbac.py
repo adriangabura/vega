@@ -10,7 +10,7 @@ if tp.TYPE_CHECKING:
     from starlette.testclient import TestClient
     from sqlalchemy.orm import Session
 
-pytestmark = pytest.mark.usefixtures("casbin_policy_blank")
+pytestmark = pytest.mark.usefixtures("casbin_policy_blank", "mappers")
 
 
 def _resource_payload() -> dict:
@@ -56,6 +56,8 @@ def test_create_role(
     from librarius.entrypoints.routers.roles import get_bus
     fastapi_start_app.dependency_overrides[get_bus] = lambda: sqlite_bus
     data = _role_payload()
+
+
 
 # def test_create_super_user(sqlite_session_factory, fastapi_test_client: "TestClient"):
 #     session: "Session" = sqlite_session_factory()

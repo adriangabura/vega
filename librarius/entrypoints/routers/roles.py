@@ -11,7 +11,7 @@ from librarius.bootstrap import bootstrap
 
 router = APIRouter(tags=["roles"])
 
-buss = bootstrap(start_orm=True)
+# bootstrap(start_orm=True)
 
 
 def get_bus():
