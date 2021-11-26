@@ -26,13 +26,3 @@ def put_role_for_user(role_name: str, user: str = Form(...)):
     if result:
         enforcer.save_policy()
         return
-
-
-@router.delete("/roles/{role_name}", status_code=HTTPStatus.NO_CONTENT)
-def delete_role(role_name: str, ):
-    """Delete a role entirely along with the policies."""
-    enforcer = get_enforcer()
-    result = enforcer.delete_role(role_name)
-    if result:
-        enforcer.save_policy()
-        return
