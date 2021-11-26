@@ -59,7 +59,10 @@ def test_create_role(
     data = _role_payload()
     data["resources"] = ["/users/321"]
 
-    result = fatc.post("/roles/", data=data, auth=('root', 'default_password'))
+    response = fatc.post("/roles/", data=data, auth=('root', 'default_password'))
+    jsonified = response.json()
+    assert jsonified["role_name"] == data["role_name"]
+    assert jsonified["role_uuid"] == data["role_uuid"]
 
 
 
