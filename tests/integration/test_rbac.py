@@ -13,25 +13,24 @@ if tp.TYPE_CHECKING:
 pytestmark = pytest.mark.usefixtures("casbin_policy_blank")
 
 
+def _resource_payload() -> dict:
+    return {
+        "username": "root",
+        "password": "default_password",
+        "resource_name": "/users/321",
+        "resource_uuid": str(uuid.uuid4())
+    }
+
+
 def test_create_resource(
         fastapi_start_app,
         fastapi_test_client: "TestClient",
         sqlite_bus
 ):
-    current_user = {
-        "username": "root",
-        "password": "default_password"
-    }
-
     fatc = fastapi_test_client
     from librarius.entrypoints.routers.resources import get_bus
     fastapi_start_app.dependency_overrides[get_bus] = lambda: sqlite_bus
-    data = {
-        "username": current_user.get("username"),
-        "password": current_user.get("password"),
-        "resource_name": "/users/321",
-        "resource_uuid": str(uuid.uuid4())
-    }
+    data = _resource_payload()
 
     response = fatc.post("/resources/", data=data, auth=('root', 'default_password'))
     jsonified = response.json()
