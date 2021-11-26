@@ -50,7 +50,8 @@ def test_create_resource(
 def test_create_role(
         fastapi_start_app,
         fastapi_test_client: "TestClient",
-        sqlite_bus
+        sqlite_bus,
+        casbin_enforcer
 ):
     fatc = fastapi_test_client
     from librarius.entrypoints.routers.roles import get_bus

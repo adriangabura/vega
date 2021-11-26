@@ -35,7 +35,7 @@ class CreateRoleHandler(AbstractCommandHandler[commands.CreateRole]):
                 self.uow.repositories.roles.add(role)
             self.uow.commit()
             for resource_name in cmd.resource_names:
-                self.uow.casbin_enforcer.add_policy(cmd.name, resource_name, "*", "*")
+                self.uow.casbin_enforcer.add_policy(cmd.name, resource_name, "*",)
             self.uow.casbin_enforcer.save_policy()
 
 
