@@ -5,7 +5,7 @@ from http import HTTPStatus
 from pydantic import BaseModel
 
 
-from fastapi import APIRouter, Depends, HTTPException, status, Response, Form
+from fastapi import APIRouter, Depends, HTTPException, status, Response, Form, Request, Body
 from librarius.entrypoints.app_enforcer import get_enforcer
 from librarius.bootstrap import bootstrap
 
@@ -19,7 +19,14 @@ def get_bus():
 
 
 @router.post("/roles/", status_code=HTTPStatus.NO_CONTENT)
-def post_role():
+def post_role(
+        request: Request,
+        username: str = Form(...),
+        password: str = Form(...),
+        resource_name: str = Form(...),
+        resource_uuid: str = Form(...),
+        bus=Depends(get_bus)
+):
     pass
 
 
