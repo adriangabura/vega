@@ -11,11 +11,11 @@ from librarius.bootstrap import bootstrap
 
 router = APIRouter(tags=["roles"])
 
-bus = bootstrap()
+buss = bootstrap(start_orm=True)
 
-@router.get("roles/")
-def gets():
-    return 423423
+
+def get_bus():
+    return bootstrap(start_orm=False)
 
 
 @router.put("/roles/{role_name}", status_code=HTTPStatus.NO_CONTENT)
