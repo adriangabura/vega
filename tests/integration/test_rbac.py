@@ -52,7 +52,10 @@ def test_create_role(
         fastapi_test_client: "TestClient",
         sqlite_bus
 ):
-    pass
+    fatc = fastapi_test_client
+    from librarius.entrypoints.routers.roles import get_bus
+    fastapi_start_app.dependency_overrides[get_bus] = lambda: sqlite_bus
+    data = _role_payload()
 
 # def test_create_super_user(sqlite_session_factory, fastapi_test_client: "TestClient"):
 #     session: "Session" = sqlite_session_factory()
