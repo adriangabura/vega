@@ -9,7 +9,7 @@ from librarius.adapters.repositories.factory import DefaultRepositoryCollection
 from librarius.entrypoints.app_enforcer import get_enforcer
 
 DEFAULT_SESSION_FACTORY: "sessionmaker" = sessionmaker(
-    bind=create_engine("sqlite:///:memory:")
+    bind=create_engine("sqlite:///test.db")
 )
 DEFAULT_REPOSITORY_CONTEXT_FACTORY: "SQLAlchemyContextMaker" = SQLAlchemyContextMaker(
     DEFAULT_SESSION_FACTORY

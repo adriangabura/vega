@@ -12,7 +12,7 @@ from librarius.adapters.repositories.contexts.sqlalchemy_implementation import (
 
 @pytest.fixture(scope="session")
 def in_memory_sqlite_db():
-    engine = create_engine("sqlite:///:memory:")
+    engine = create_engine("sqlite:///test.db")
     metadata.create_all(engine)
     return engine
 

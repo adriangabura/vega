@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 @pytest.fixture
 def sqlite_bus(sql_alchemy_context_factory: "SQLAlchemyContextMaker", casbin_enforcer):
     bus = bootstrap.bootstrap(
-        start_orm=True,
+        start_orm=False,
         uow=GenericUnitOfWork(context_factory=sql_alchemy_context_factory, casbin_enforcer=casbin_enforcer),
         notifications=mock.Mock(),
         publish=lambda *args: None
