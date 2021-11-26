@@ -47,6 +47,12 @@ def test_create_resource(
     assert jsonified["resource_uuid"] == data["resource_uuid"]
 
 
+def test_create_role(
+        fastapi_start_app,
+        fastapi_test_client: "TestClient",
+        sqlite_bus
+):
+    pass
 
 # def test_create_super_user(sqlite_session_factory, fastapi_test_client: "TestClient"):
 #     session: "Session" = sqlite_session_factory()
