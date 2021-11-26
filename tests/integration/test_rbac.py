@@ -12,17 +12,20 @@ if tp.TYPE_CHECKING:
 
 pytestmark = pytest.mark.usefixtures("casbin_policy_blank")
 
-from starlette.testclient import TestClient
-from librarius.entrypoints.routers.resources import get_bus
-def test_create_superuser(sqlite_session_factory, fastapi_start_app, fastapi_test_client: "TestClient", sqlite_bus):
+
+def test_create_resource(
+        fastapi_start_app,
+        fastapi_test_client: "TestClient",
+        sqlite_bus
+):
     current_user = {
         "username": "root",
         "password": "default_password"
     }
 
-    fatc = TestClient(fastapi_start_app)#fastapi_test_client
-    fastapi_start_app.dependency_overrides[get_bus] = lambda : sqlite_bus
-    print(fastapi_start_app.dependency_overrides)
+    fatc = fastapi_test_client
+    from librarius.entrypoints.routers.resources import get_bus
+    fastapi_start_app.dependency_overrides[get_bus] = lambda: sqlite_bus
     data = {
         "username": current_user.get("username"),
         "password": current_user.get("password"),
