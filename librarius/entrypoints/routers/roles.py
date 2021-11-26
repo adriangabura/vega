@@ -22,7 +22,7 @@ def get_bus():
     return bootstrap(start_orm=False)
 
 
-@router.post("/roles/", status_code=HTTPStatus.NO_CONTENT)
+@router.post("/roles/", status_code=HTTPStatus.CREATED)
 def post_role(
         request: Request,
         username: str = Form(...),

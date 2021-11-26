@@ -20,7 +20,7 @@ def get_bus():
     return bootstrap(start_orm=False)
 
 
-@router.post("/resources/", status_code=HTTPStatus.NO_CONTENT)
+@router.post("/resources/", status_code=HTTPStatus.CREATED)
 def post_resource(
         request: Request,
         username: str = Form(...),
