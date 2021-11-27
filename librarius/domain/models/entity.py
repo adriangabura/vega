@@ -9,6 +9,9 @@ if tp.TYPE_CHECKING:
 
 
 class Entity:
+    """Entity/Resource base class
+    _repr_attributes are the attributes shown in repr
+    """
     _repr_attributes: list[str] = ["uuid", "date_added", "date_modified"]
 
     @classmethod
@@ -40,5 +43,5 @@ class Entity:
             if self._get_repr_attribute(attribute) is not None
         ]
         return (
-            f"{self.__class__.__name__}({', '.join(attributes)})"  # To check the above
+            f"{self.__class__.__name__}({', '.join(attributes)})"  # TODO check the above
         )

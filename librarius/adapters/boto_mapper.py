@@ -10,7 +10,7 @@ from boto3.exceptions import ResourceNotExistsError
 from botocore.exceptions import ClientError
 
 from librarius.config.utils import TRegions
-from librarius.service_layer.dto import FileUploadDto
+from librarius.service.dto import FileUploadDto
 
 logger = logging.getLogger(__name__)
 
@@ -65,7 +65,7 @@ class BucketOperation:
             except ClientError as error:
                 status_code = error.response["ResponseMetadata"]["HTTPStatusCode"]
                 if status_code == 404:
-                    logger.error(f"Bucket '{name}' not found.")
+                    logger.warning(f"Bucket '{name}' not found.")
                 else:
                     logger.exception(error)
                 return False
@@ -98,11 +98,14 @@ class BucketOperation:
             if bucket_versioning.status == "Enabled" and versioning:
                 bucket.object_versions.delete()
                 return True
-            elif bucket_versioning.status == "Disabled" and not versioning:
+            elif not versioning:
                 bucket.objects.all().delete()
                 return True
         except ClientError as error:
-            logger.error(error)
+            if error.response["Error"]["Code"] == "NoSuchBucket":
+                logger.warning(f"Bucket with name '{name}' doesn't exist.")
+            else:
+                logger.error(error)
             return False
 
     @staticmethod
@@ -197,7 +200,11 @@ class ObjectOperation:
 
     @staticmethod
     def generate_presigned_url(
-        resource: S3ServiceResource, client: S3Client, bucket_name: str, key: str
+        resource: S3ServiceResource,
+        client: S3Client,
+        bucket_name: str,
+        key: str,
+        presigned_url_expiration: int,
     ) -> tp.Union[str, tp.Literal[False]]:
         if not ObjectOperation.check_object_exists(resource, bucket_name, key):
             return False
@@ -205,7 +212,7 @@ class ObjectOperation:
             response = client.generate_presigned_url(
                 "get_object",
                 Params={"Bucket": bucket_name, "Key": key},
-                ExpiresIn=config.PRESIGNED_URL_EXPIRATION,
+                ExpiresIn=presigned_url_expiration,
             )
         except ClientError as error:
             logger.error(error.response)
@@ -217,13 +224,33 @@ class ObjectOperation:
 class BucketWrapper:
     """BucketWrapper only uses BucketOperations and ObjectOperations to upload and delete files and create and clean-up buckets"""
 
-    def __init__(
-        self, resource: S3ServiceResource, bucket_name: str, region_name: TRegions
-    ):
-        self._resource = resource
-        self._client = resource.meta.client
+    def __init__(self, session: Session, bucket_name: str):
+        self._session = session
+        self._resource = session.resource("s3")
+        self._client = self._resource.meta.client
         self.bucket_name = bucket_name
-        self.region_name = region_name
+        self.region_name: TRegions = session.region_name
+        self._get_or_create_bucket()
+
+    @classmethod
+    def from_config(
+        cls,
+        aws_access_key_id: str,
+        aws_secret_access_key: str,
+        region_name: TRegions,
+        bucket_name: str,
+    ):
+        session = Session(
+            aws_access_key_id=aws_access_key_id,
+            aws_secret_access_key=aws_secret_access_key,
+            region_name=region_name,
+        )
+        return cls(session, bucket_name)
+
+    def _get_or_create_bucket(self) -> Bucket:
+        return BucketOperation.get_or_create(
+            self._resource, self._client, self.bucket_name, self.region_name
+        )
 
     def upload_file(self, file_dto: FileUploadDto, key: str):
         bucket = BucketOperation.get_or_create(
@@ -241,7 +268,7 @@ class BucketWrapper:
         )
         return result
 
-    def delete_file(self, key: str):
+    def delete_file(self, key: str) -> bool:
         bucket = BucketOperation.get(self._resource, self._client, self.bucket_name)
         if bucket:
             result = ObjectOperation.delete(self._resource, self.bucket_name, key)
@@ -252,39 +279,38 @@ class BucketWrapper:
                 result = BucketOperation.delete(
                     self._resource, self._client, self.bucket_name
                 )
+            return result
 
-
-class SessionWrapper:
-    def __init__(self, session: Session):
-        self.session = session
-        self.resource = session.resource("s3")
-        self.client = self.resource.meta.client
-        self.buckets: dict = dict()
-
-    def initialize_bucket_wrapper(self, bucket_name: str) -> BucketWrapper:
-        self.buckets[bucket_name] = BucketWrapper(
-            self.resource, bucket_name, self.session.region_name
-        )
-        return self.buckets[bucket_name]
-
-    @classmethod
-    def from_config(
-        cls,
-        aws_access_key_id: str,
-        aws_secret_access_key: str,
-        region_name: TRegions,
-    ):
-        session = Session(
-            aws_access_key_id=aws_access_key_id,
-            aws_secret_access_key=aws_secret_access_key,
-            region_name=region_name,
-        )
-        return cls(
-            session,
+    def generate_presigned_url(self, key: str, presigned_url_expiration: int) -> str:
+        return ObjectOperation.generate_presigned_url(
+            self._resource,
+            self._client,
+            self.bucket_name,
+            key,
+            presigned_url_expiration,
         )
 
 
 class FileRepository:
+    def __init__(self, bucket_wrapper: BucketWrapper):
+        self._wrapper = bucket_wrapper
+
+    @classmethod
+    def initialize(
+        cls,
+        aws_access_key_id: str,
+        aws_secret_access_key: str,
+        region_name: TRegions,
+        bucket_name: str,
+    ):
+        bucket_wrapper = BucketWrapper.from_config(
+            aws_access_key_id=aws_access_key_id,
+            aws_secret_access_key=aws_secret_access_key,
+            region_name=region_name,
+            bucket_name=bucket_name,
+        )
+        return cls(bucket_wrapper=bucket_wrapper)
+
     def upload_file(self):
         pass
 

@@ -1,1 +1,3 @@
-
+from librarius.adapters.repositories.publications import PublicationsRepository
+from librarius.adapters.repositories.users import UsersRepository
+from librarius.adapters.repositories.roles import RolesRepository

@@ -1,0 +1,7 @@
+.env
+.pytest_cache
+.idea
+__pycache__
+.mypy_cache
+/librarius/config/enforcer.py
+.python-version

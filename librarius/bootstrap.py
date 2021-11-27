@@ -2,10 +2,10 @@ import inspect
 import typing as tp
 from librarius.adapters import orm, redis_eventpublisher
 from librarius.adapters.notifications import MemoryNotification
-from librarius.service_layer import handlers, message_bus, uow as uow_package
+from librarius.service import handlers, message_bus, uow as uow_package
 
 if tp.TYPE_CHECKING:
-    from librarius.service_layer import AbstractUnitOfWork
+    from librarius.service import AbstractUnitOfWork
     from librarius.adapters.notifications import AbstractNotification
     from librarius.domain.messages import (
         AbstractCommand,
@@ -13,7 +13,7 @@ if tp.TYPE_CHECKING:
         AbstractQuery,
         AbstractMessage,
     )
-    from librarius.service_layer.handlers import AbstractHandler, TAbstractHandler
+    from librarius.service.handlers import AbstractHandler, TAbstractHandler
 
 
 def inject_dependencies(

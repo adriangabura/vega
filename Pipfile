@@ -4,21 +4,27 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-sqlalchemy = {version = "~=1.4.25", extras = ["mypy"]}
-python-dotenv = "~=0.19"
-boto3 = "~=1.19.12"
+sqlalchemy = {version = "~=1.4.27", extras = ["mypy"]}
+python-dotenv = "~=0.19.2"
+boto3 = "~=1.20.8"
+casbin = "*"
+uvicorn = {extras = ["standard"], version = "*"}
+fastapi = "*"
+fastapi-authz = "*"
+requests = "*"
+python-multipart = "*"
 
 [dev-packages]
 pytest = "~=6.2.5"
 mypy = "~=0.910"
-mypy-boto3 = "~=1.19.12"
-botocore-stubs = "~=1.22.12"
-boto3-stubs = {version = "~=1.19.12", extras = ["s3"]}
-mypy-boto3-s3 = "~=1.19.12"
+mypy-boto3 = "~=1.20.9"
+botocore-stubs = "~=1.23.9 "
+boto3-stubs = {version = "~=1.20.9 ", extras = ["s3"]}
+mypy-boto3-s3 = "~=1.20.1"
 black = "~=21.10b0"
 
 [requires]
-python_version = "3.9"
+python_version = "3.10"
 
 [pipenv]
 allow_prereleases = true
