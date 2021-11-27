@@ -10,7 +10,7 @@ if tp.TYPE_CHECKING:
     from starlette.testclient import TestClient
     from sqlalchemy.orm import Session
 
-pytestmark = pytest.mark.usefixtures("casbin_policy_blank", "mappers")
+pytestmark = pytest.mark.usefixtures("casbin_policy_blank", "mappers", "supergroup_role")
 
 
 def _resource_payload() -> dict:
