@@ -65,9 +65,14 @@ class CreateUserHandler(AbstractCommandHandler[commands.CreateUser]):
                     _role = self.uow.repositories.roles.find_by_name(name=role_name)
                     user.roles.append(_role)
                 self.uow.repositories.roles.add(_role)
+                for role_group_name in cmd.role_groups:
+                    _role_group = self.uow.repositories.role_groups.find_by_name(role_group_name)
+                    user.role_groups.append(_role_group)
             self.uow.commit()
             for role_name in cmd.roles:
                 self.uow.casbin_enforcer.add_role_for_user(user=cmd.name, role=role_name)
+            for role_group_name in cmd.role_groups:
+                self.uow.casbin_enforcer.add_role_for_user(user=cmd.name, role=role_group_name)
             self.uow.casbin_enforcer.save_policy()
 
 

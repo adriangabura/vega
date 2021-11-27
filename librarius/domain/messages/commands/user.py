@@ -8,3 +8,4 @@ class CreateUser(AbstractCommand["CreateUser"]):
     name: str
     user_uuid: str
     roles: list[str]  # Just the role names
+    role_groups: list[str]  # Just the role group names

@@ -7,6 +7,7 @@ from librarius.domain.models import Entity
 if tp.TYPE_CHECKING:
     from librarius.domain.models.publication import Publication
     from librarius.domain.models.role import Role
+    from librarius.domain.models.role_group import RoleGroup
 
 
 class User(Entity):
@@ -23,3 +24,4 @@ class User(Entity):
         super().__init__(uuid=uuid, date_added=date_added, date_modified=date_modified)
         self.name: str = name
         self.roles: list["Role"] = []
+        self.role_groups: list["RoleGroup"] = []

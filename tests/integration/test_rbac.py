@@ -109,13 +109,17 @@ def test_create_user(
     fastapi_start_app.dependency_overrides[get_bus] = lambda: sqlite_bus
     data = _user_payload()
     data["roles"] = ["driver"]
+    data["role_groups"] = ["superadm"]
 
     response = fatc.post("/users/", data=data, auth=('root', 'default_password'))
     jsonified = response.json()
     assert jsonified["user_username"] == data["user_username"]
     assert jsonified["user_uuid"] == data["user_uuid"]
+    assert jsonified["roles"] == ["driver"]
+    assert jsonified["role_groups"] == ["superadm"]
 
-def test_superuser(
+
+def test_superuser_roles(
         fastapi_start_app,
         fastapi_test_client: "TestClient",
         sqlite_bus
@@ -123,7 +127,6 @@ def test_superuser(
     fatc = fastapi_test_client
     from librarius.entrypoints.routers.role_groups import get_bus
     fastapi_start_app.dependency_overrides[get_bus] = lambda: sqlite_bus
-    data = _role_group_payload()
     response = fatc.get("/role_groups/supergroup_role", auth=('root', 'default_password'))
     jsonify = response.json()
     assert set(jsonify["roles"]) == {
@@ -136,6 +139,10 @@ def test_superuser(
         "superadmin_roles_role",
         "superadmin_all_roles_role"
     }
+
+
+# def test_superuser_casbin(casbin_enforcer):
+#     pass
 
 
 # def test_create_super_user(sqlite_session_factory, fastapi_test_client: "TestClient"):

@@ -25,12 +25,14 @@ def post_user(
         user_username: str = Form(...),
         user_uuid: str = Form(...),
         roles: list = Body(...),
+        role_groups: list = Body(...),
         bus=Depends(get_bus)
 ):
     ce = get_enforcer()
     if ce.enforce(username, request.url.path, request.method):
-        bus.handle(commands.CreateUser(name=user_username, user_uuid=user_uuid, roles=roles))
+        bus.handle(commands.CreateUser(name=user_username, user_uuid=user_uuid, roles=roles, role_groups=role_groups))
         user: "models.User" = bus.handle(queries.UserByUsername(username=user_username))
         return {
-            "user_username": user.name, "user_uuid": user.uuid, "roles": [role.name for role in user.roles]
+            "user_username": user.name, "user_uuid": user.uuid, "roles": [role.name for role in user.roles],
+            "role_groups": [role_group.name for role_group in user.role_groups]
         }
