@@ -22,6 +22,16 @@ def get_bus():
     return bootstrap(start_orm=False)
 
 
+@router.get("/role_groups/{role_group_name}", status_code=HTTPStatus.OK)
+def get_role_group_by_name(role_group_name: str, bus=Depends(get_bus)):
+    role_group: "models.RoleGroup" = bus.handle(queries.RoleGroupByName(role_group_name=role_group_name))
+    return {
+        "role_group_name": role_group.name,
+        "role_group_uuid": role_group.uuid,
+        "roles": [role.name for role in role_group.roles]
+    }
+
+
 @router.post("/role_groups/", status_code=HTTPStatus.CREATED)
 def post_role_group(
         request: Request,

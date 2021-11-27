@@ -115,6 +115,29 @@ def test_create_user(
     assert jsonified["user_username"] == data["user_username"]
     assert jsonified["user_uuid"] == data["user_uuid"]
 
+def test_superuser(
+        fastapi_start_app,
+        fastapi_test_client: "TestClient",
+        sqlite_bus
+):
+    fatc = fastapi_test_client
+    from librarius.entrypoints.routers.role_groups import get_bus
+    fastapi_start_app.dependency_overrides[get_bus] = lambda: sqlite_bus
+    data = _role_group_payload()
+    response = fatc.get("/role_groups/supergroup_role", auth=('root', 'default_password'))
+    jsonify = response.json()
+    assert set(jsonify["roles"]) == {
+        "superadmin_users_role",
+        "superadmin_all_users_role",
+        "superadmin_groups_role",
+        "superadmin_all_groups_role",
+        "superadmin_policies_role",
+        "superadmin_all_policies_role",
+        "superadmin_roles_role",
+        "superadmin_all_roles_role"
+    }
+
+
 # def test_create_super_user(sqlite_session_factory, fastapi_test_client: "TestClient"):
 #     session: "Session" = sqlite_session_factory()
 #     context = SQLAlchemyRepositoryContext(session)

@@ -74,6 +74,23 @@ def supergroup_role(fastapi_start_app, fastapi_test_client: "TestClient", sqlite
             auth=('root', 'default_password')
         )
 
+    fastapi_start_app.dependency_overrides.clear()
+
+    from librarius.entrypoints.routers.role_groups import get_bus
+    fastapi_start_app.dependency_overrides[get_bus] = lambda: sqlite_bus
+
+    fatc.post(
+        "/role_groups/",
+        data={
+            "username": "root",
+            "password": "default_password",
+            "role_group_name": "supergroup_role",
+            "role_group_uuid": str(uuid.uuid4()),
+            "roles": [i for i in roles.keys()]
+        },
+        auth=('root', 'default_password')
+    )
+
 
 # @pytest.fixture
 # def supergroup_role(casbin_enforcer: casbin.Enforcer) -> None:
