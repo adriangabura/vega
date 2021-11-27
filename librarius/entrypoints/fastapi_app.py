@@ -21,6 +21,7 @@ def start_app(app: FastAPI):
     app.include_router(routers.policies_router)
     app.include_router(routers.roles_router)
     app.include_router(routers.resources_router)
+    app.include_router(routers.role_groups_router)
 
     @app.get("/")
     async def read_main():

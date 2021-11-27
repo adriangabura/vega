@@ -82,6 +82,24 @@ def test_create_role(
     assert jsonified["role_uuid"] == data["role_uuid"]
 
 
+def test_create_role_group(
+        fastapi_start_app,
+        fastapi_test_client: "TestClient",
+        sqlite_bus
+):
+    fatc = fastapi_test_client
+    from librarius.entrypoints.routers.role_groups import get_bus
+    fastapi_start_app.dependency_overrides[get_bus] = lambda: sqlite_bus
+    data = _role_group_payload()
+    data["roles"] = ["driver"]
+
+    response = fatc.post("/role_groups/", data=data, auth=('root', 'default_password'))
+    jsonified = response.json()
+    assert jsonified["role_group_name"] == data["role_group_name"]
+    assert jsonified["role_group_uuid"] == data["role_group_uuid"]
+
+
+
 def test_create_user(
         fastapi_start_app,
         fastapi_test_client: "TestClient",

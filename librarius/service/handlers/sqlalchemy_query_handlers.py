@@ -52,7 +52,7 @@ class RetrieveRoleGroupByName(AbstractQueryHandler[queries.RoleGroupByName]):
     def __call__(self, query: "queries.RoleGroupByName"):
         with self.uow:
             session: "Session" = self.uow.context.session
-            result: "models.RoleGroup" = session.query(models.Role).filter_by(name=query.role_group_name).first()
+            result: "models.RoleGroup" = session.query(models.RoleGroup).filter_by(name=query.role_group_name).first()
             session.expunge_all()
             return result
 
