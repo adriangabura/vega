@@ -7,7 +7,7 @@ from librarius.adapters.repositories.contexts import SQLAlchemyRepositoryContext
 class RoleGroupsRepository(
     AbstractRepository["RoleGroupsRepository", SQLAlchemyRepositoryContext]
 ):
-    name: tp.ClassVar[str] = "roles"
+    name: tp.ClassVar[str] = "role_groups"
 
     def add(self, role_group: "RoleGroup") -> None:
         self.context.add(role_group)

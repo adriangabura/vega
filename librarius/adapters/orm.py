@@ -187,7 +187,7 @@ def start_mappers():
                 lazy="joined",
                 collection_class=list
             ),
-            "role_group": relationship(
+            "role_group.py": relationship(
                 "RoleGroup",
                 secondary=role_groups_roles,
                 back_populates="roles",
@@ -204,7 +204,7 @@ def start_mappers():
             "roles": relationship(
                 "Role",
                 secondary=role_groups_roles,
-                back_populates="role_group",
+                back_populates="role_group.py",
                 lazy="joined",
                 collection_class=list
             ),
@@ -304,4 +304,9 @@ def load_user(target: models.User, context: QueryContext):
 
 @event.listens_for(models.Resource, "load")
 def load_resource(target: models.Resource, context: QueryContext):
+    target.events = []
+
+
+@event.listens_for(models.Resource, "load")
+def load_role_group(target: models.RoleGroup, context: QueryContext):
     target.events = []
