@@ -31,6 +31,15 @@ def _role_payload():
     }
 
 
+def _role_group_payload():
+    return {
+        "username": "root",
+        "password": "default_password",
+        "role_group_name": "superadm",
+        "role_group_uuid": str(uuid.uuid4())
+    }
+
+
 def _user_payload():
     return {
         "username": "root",
