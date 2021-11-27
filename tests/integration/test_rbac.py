@@ -99,7 +99,6 @@ def test_create_role_group(
     assert jsonified["role_group_uuid"] == data["role_group_uuid"]
 
 
-
 def test_create_user(
         fastapi_start_app,
         fastapi_test_client: "TestClient",
