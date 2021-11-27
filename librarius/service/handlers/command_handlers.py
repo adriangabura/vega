@@ -39,6 +39,23 @@ class CreateRoleHandler(AbstractCommandHandler[commands.CreateRole]):
             self.uow.casbin_enforcer.save_policy()
 
 
+class CreateUserHandler(AbstractCommandHandler[commands.CreateUser]):
+    def __call__(self, cmd: "commands.CreateUser"):
+        with self.uow:
+            user = self.uow.repositories.users.find_by_username(cmd.name)
+            if user is None:
+                user = models.User(uuid=cmd.user_uuid, name=cmd.name)
+                for role_name in cmd.roles:
+                    _role = self.uow.repositories.roles.find_by_name(name=role_name)
+                    user.roles.append(_role)
+                self.uow.repositories.roles.add(_role)
+            self.uow.commit()
+            for role_name in cmd.roles:
+                self.uow.casbin_enforcer.add_role_for_user(user=cmd.name, role=role_name)
+            self.uow.casbin_enforcer.save_policy()
+
+
+
 class CreateAuthorHandler(AbstractCommandHandler[commands.CreateAuthor]):
     def __call__(self, cmd: "commands.CreateAuthor"):
         with self.uow:
@@ -130,6 +147,7 @@ class AddPublicationToSeriesHandler(
 COMMAND_HANDLERS: tp.Mapping[
     tp.Type["AbstractCommand"], tp.Type["AbstractCommandHandler"]
 ] = {
+    commands.CreateUser: CreateUserHandler,
     commands.CreateResource: CreateResourceHandler,
     commands.CreateRole: CreateRoleHandler,
     commands.CreateAuthor: CreateAuthorHandler,

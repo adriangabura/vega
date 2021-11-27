@@ -5,3 +5,4 @@ from .resource import (
     ResourceByName
 )
 from .role import RoleByName
+from .user import UserByUsername

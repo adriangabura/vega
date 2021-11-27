@@ -48,6 +48,16 @@ class RetrieveRoleByName(AbstractQueryHandler[queries.RoleByName]):
             return result
 
 
+class RetrieveUserByUsername(AbstractQueryHandler[queries.UserByUsername]):
+    def __call__(self, query: "queries.UserByUsername"):
+        with self.uow:
+            session: "Session" = self.uow.context.session
+            result: "models.User" = session.query(models.User).filter_by(name=query.username).first()
+            session.expunge_all()
+            return result
+
+
+
 class RetrieveAuthorByUuid(AbstractQueryHandler[queries.AuthorByUuid]):
     def __call__(self, query: "queries.AuthorByUuid"):
         with self.uow as uow_context:
@@ -95,6 +105,7 @@ class RetrievePublicationByUuid(AbstractQueryHandler[queries.PublicationByUuid])
 QUERY_HANDLERS: tp.Mapping[
     tp.Type["AbstractQuery"], tp.Type["AbstractQueryHandler"]
 ] = {
+    queries.UserByUsername: RetrieveUserByUsername,
     queries.RoleByName: RetrieveRoleByName,
     queries.ResourceByName: RetrieveResourceByName,
     queries.AllPublications: RetrieveAllPublicationsHandler,

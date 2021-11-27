@@ -31,6 +31,15 @@ def _role_payload():
     }
 
 
+def _user_payload():
+    return {
+        "username": "root",
+        "password": "default_password",
+        "user_username": "cerbulan",
+        "user_uuid": str(uuid.uuid4())
+    }
+
+
 def test_create_resource(
         fastapi_start_app,
         fastapi_test_client: "TestClient",
@@ -50,8 +59,7 @@ def test_create_resource(
 def test_create_role(
         fastapi_start_app,
         fastapi_test_client: "TestClient",
-        sqlite_bus,
-        casbin_enforcer
+        sqlite_bus
 ):
     fatc = fastapi_test_client
     from librarius.entrypoints.routers.roles import get_bus
@@ -65,7 +73,21 @@ def test_create_role(
     assert jsonified["role_uuid"] == data["role_uuid"]
 
 
+def test_create_user(
+        fastapi_start_app,
+        fastapi_test_client: "TestClient",
+        sqlite_bus
+):
+    fatc = fastapi_test_client
+    from librarius.entrypoints.routers.users import get_bus
+    fastapi_start_app.dependency_overrides[get_bus] = lambda: sqlite_bus
+    data = _user_payload()
+    data["roles"] = ["driver"]
 
+    response = fatc.post("/users/", data=data, auth=('root', 'default_password'))
+    jsonified = response.json()
+    assert jsonified["user_username"] == data["user_username"]
+    assert jsonified["user_uuid"] == data["user_uuid"]
 
 # def test_create_super_user(sqlite_session_factory, fastapi_test_client: "TestClient"):
 #     session: "Session" = sqlite_session_factory()

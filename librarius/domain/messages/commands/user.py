@@ -7,4 +7,4 @@ from librarius.domain.messages import AbstractCommand
 class CreateUser(AbstractCommand["CreateUser"]):
     name: str
     user_uuid: str
-    roles: list[str]  # Just the role uuids
+    roles: list[str]  # Just the role names

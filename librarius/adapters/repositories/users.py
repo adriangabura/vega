@@ -24,3 +24,6 @@ class UsersRepository(
 
     def find_by_uuid(self, uuid) -> tp.Optional["User"]:
         return self.context.session.query(User).filter_by(uuid=uuid).first()
+
+    def find_by_username(self, name) -> tp.Optional["User"]:
+        return self.context.session.query(User).filter_by(name=name).first()

@@ -232,3 +232,18 @@ def load_series(target: models.Series, context: QueryContext):
 @event.listens_for(models.Publication, "load")
 def load_publication(target: models.Publication, context: QueryContext):
     target.events = []
+
+
+@event.listens_for(models.Role, "load")
+def load_role(target: models.Role, context: QueryContext):
+    target.events = []
+
+
+@event.listens_for(models.User, "load")
+def load_user(target: models.User, context: QueryContext):
+    target.events = []
+
+
+@event.listens_for(models.Resource, "load")
+def load_resource(target: models.Resource, context: QueryContext):
+    target.events = []
