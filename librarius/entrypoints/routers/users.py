@@ -17,6 +17,18 @@ def get_bus():
     return bootstrap(start_orm=False)
 
 
+@router.get("/users/{user_username}")
+def get_user(user_username: str, bus=Depends(get_bus)):
+    user: "models.User" = bus.handle(queries.UserByUsername(username=user_username))
+    if user:
+        return {
+            "user_username": user.name,
+            "user_uuid": user.uuid,
+            "roles": [i.name for i in user.roles],
+            "role_groups": [i.name for i in user.role_groups]
+        }
+
+
 @router.post("/users/")
 def post_user(
         request: Request,

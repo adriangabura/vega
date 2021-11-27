@@ -64,7 +64,7 @@ class CreateUserHandler(AbstractCommandHandler[commands.CreateUser]):
                 for role_name in cmd.roles:
                     _role = self.uow.repositories.roles.find_by_name(name=role_name)
                     user.roles.append(_role)
-                self.uow.repositories.roles.add(_role)
+                    self.uow.repositories.roles.add(_role)
                 for role_group_name in cmd.role_groups:
                     _role_group = self.uow.repositories.role_groups.find_by_name(role_group_name)
                     user.role_groups.append(_role_group)

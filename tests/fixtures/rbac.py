@@ -92,6 +92,28 @@ def supergroup_role(fastapi_start_app, fastapi_test_client: "TestClient", sqlite
     )
 
 
+@pytest.mark.usefixtures("mappers", "supergroup_role")
+@pytest.fixture
+def superadmin_user(fastapi_start_app, sqlite_bus, fastapi_test_client):
+    from librarius.entrypoints.routers.users import get_bus
+    fastapi_start_app.dependency_overrides[get_bus] = lambda: sqlite_bus
+
+    fatc = fastapi_test_client
+
+    fatc.post(
+        "/users/",
+        data={
+            "username": "root",
+            "password": "default_password",
+            "user_username": "superadmin",
+            "user_uuid": str(uuid.uuid4()),
+            "role_groups": ["supergroup_role"],
+            "roles": []
+        },
+        auth=('root', 'default_password')
+    )
+
+
 # @pytest.fixture
 # def supergroup_role(casbin_enforcer: casbin.Enforcer) -> None:
 #     """Creates dynamically a superuser role."""

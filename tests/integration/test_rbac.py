@@ -10,7 +10,7 @@ if tp.TYPE_CHECKING:
     from starlette.testclient import TestClient
     from sqlalchemy.orm import Session
 
-pytestmark = pytest.mark.usefixtures("casbin_policy_blank", "mappers", "supergroup_role")
+pytestmark = pytest.mark.usefixtures("casbin_policy_blank", "mappers", "supergroup_role", "superadmin_user")
 
 
 def _resource_payload() -> dict:
@@ -139,6 +139,15 @@ def test_superuser_roles(
         "superadmin_roles_role",
         "superadmin_all_roles_role"
     }
+
+
+def test_superadmin_user(
+        fastapi_start_app,
+        fastapi_test_client: "TestClient",
+        sqlite_bus,
+):
+    fatc = fastapi_test_client
+    response = fatc.get("/users/superadmin", auth=('root', 'default_password'))
 
 
 # def test_superuser_casbin(casbin_enforcer):
