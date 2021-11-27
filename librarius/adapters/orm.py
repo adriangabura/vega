@@ -66,6 +66,22 @@ roles: Table = Table(
     Column("date_modified", DateTime),
 )
 
+role_groups: Table = Table(
+    "role_groups",
+    metadata,
+    Column("uuid", String(255), primary_key=True, autoincrement=False),
+    Column("name", String(255)),
+    Column("date_added", DateTime),
+    Column("date_modified", DateTime),
+)
+
+role_groups_roles: Table = Table(
+    "role_groups_roles",
+    metadata,
+    Column("role_group_uuid", String(255), ForeignKey("role_groups.uuid")),
+    Column("role_uuid", String(255), ForeignKey("roles.uuid")),
+)
+
 resources: Table = Table(
     "resources",
     metadata,
@@ -80,6 +96,13 @@ user_roles: Table = Table(
     metadata,
     Column("user_uuid", String(255), ForeignKey("users.uuid")),
     Column("role_uuid", String(255), ForeignKey("roles.uuid")),
+)
+
+user_role_groups: Table = Table(
+    "user_role_groups",
+    metadata,
+    Column("user_uuid", String(255), ForeignKey("users.uuid")),
+    Column("role_group_uuid", String(255), ForeignKey("role_groups.uuid")),
 )
 
 role_resources: Table = Table(
@@ -119,6 +142,13 @@ def start_mappers():
                 back_populates="users",
                 lazy="joined",
                 collection_class=list
+            ),
+            "role_groups": relationship(
+                "RoleGroup",
+                secondary=user_role_groups,
+                back_populates="users",
+                lazy="joined",
+                collection_class=list
             )
         }
     )
@@ -154,6 +184,34 @@ def start_mappers():
                 "Resource",
                 secondary=role_resources,
                 back_populates="roles",
+                lazy="joined",
+                collection_class=list
+            ),
+            "role_group": relationship(
+                "RoleGroup",
+                secondary=role_groups_roles,
+                back_populates="roles",
+                lazy="joined",
+                uselist=False
+            )
+        }
+    )
+
+    role_groups_mapper = mapper_registry.map_imperatively(
+        models.RoleGroup,
+        role_groups,
+        properties={
+            "roles": relationship(
+                "Role",
+                secondary=role_groups_roles,
+                back_populates="role_group",
+                lazy="joined",
+                collection_class=list
+            ),
+            "users": relationship(
+                "User",
+                secondary=user_role_groups,
+                back_populates="role_groups",
                 lazy="joined",
                 collection_class=list
             )
