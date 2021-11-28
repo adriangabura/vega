@@ -1,3 +1,4 @@
+import logging
 import typing as tp
 import uuid
 
@@ -145,9 +146,16 @@ def test_superadmin_user(
         fastapi_start_app,
         fastapi_test_client: "TestClient",
         sqlite_bus,
+        casbin_enforcer
 ):
     fatc = fastapi_test_client
-    response = fatc.get("/users/superadmin", auth=('root', 'default_password'))
+    response = fatc.get("/users/superadmin", auth=('superadmin', 'default_password'))
+    jsonified = response.json()
+    assert 'supergroup_role' in jsonified["role_groups"]
+    assert jsonified["user_username"] == 'superadmin'
+    assert casbin_enforcer.has_role_for_user('superadmin', 'supergroup_role')
+
+
 
 
 # def test_superuser_casbin(casbin_enforcer):
