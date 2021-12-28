@@ -29,3 +29,7 @@ from .role import (
 from .resource import (
     CreateResource
 )
+
+from .role_group import (
+    CreateRoleGroup
+)

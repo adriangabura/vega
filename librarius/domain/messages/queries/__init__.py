@@ -6,3 +6,4 @@ from .resource import (
 )
 from .role import RoleByName
 from .user import UserByUsername
+from .role_group import RoleGroupByName

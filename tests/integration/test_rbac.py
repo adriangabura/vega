@@ -1,3 +1,4 @@
+import logging
 import typing as tp
 import uuid
 
@@ -10,7 +11,7 @@ if tp.TYPE_CHECKING:
     from starlette.testclient import TestClient
     from sqlalchemy.orm import Session
 
-pytestmark = pytest.mark.usefixtures("casbin_policy_blank", "mappers")
+pytestmark = pytest.mark.usefixtures("casbin_policy_blank", "mappers", "supergroup_role", "superadmin_user")
 
 
 def _resource_payload() -> dict:
@@ -28,6 +29,15 @@ def _role_payload():
         "password": "default_password",
         "role_name": "driver",
         "role_uuid": str(uuid.uuid4())
+    }
+
+
+def _role_group_payload():
+    return {
+        "username": "root",
+        "password": "default_password",
+        "role_group_name": "superadm",
+        "role_group_uuid": str(uuid.uuid4())
     }
 
 
@@ -73,6 +83,23 @@ def test_create_role(
     assert jsonified["role_uuid"] == data["role_uuid"]
 
 
+def test_create_role_group(
+        fastapi_start_app,
+        fastapi_test_client: "TestClient",
+        sqlite_bus
+):
+    fatc = fastapi_test_client
+    from librarius.entrypoints.routers.role_groups import get_bus
+    fastapi_start_app.dependency_overrides[get_bus] = lambda: sqlite_bus
+    data = _role_group_payload()
+    data["roles"] = ["driver"]
+
+    response = fatc.post("/role_groups/", data=data, auth=('root', 'default_password'))
+    jsonified = response.json()
+    assert jsonified["role_group_name"] == data["role_group_name"]
+    assert jsonified["role_group_uuid"] == data["role_group_uuid"]
+
+
 def test_create_user(
         fastapi_start_app,
         fastapi_test_client: "TestClient",
@@ -83,11 +110,57 @@ def test_create_user(
     fastapi_start_app.dependency_overrides[get_bus] = lambda: sqlite_bus
     data = _user_payload()
     data["roles"] = ["driver"]
+    data["role_groups"] = ["superadm"]
 
     response = fatc.post("/users/", data=data, auth=('root', 'default_password'))
     jsonified = response.json()
     assert jsonified["user_username"] == data["user_username"]
     assert jsonified["user_uuid"] == data["user_uuid"]
+    assert jsonified["roles"] == ["driver"]
+    assert jsonified["role_groups"] == ["superadm"]
+
+
+def test_superuser_roles(
+        fastapi_start_app,
+        fastapi_test_client: "TestClient",
+        sqlite_bus
+):
+    fatc = fastapi_test_client
+    from librarius.entrypoints.routers.role_groups import get_bus
+    fastapi_start_app.dependency_overrides[get_bus] = lambda: sqlite_bus
+    response = fatc.get("/role_groups/supergroup_role", auth=('root', 'default_password'))
+    jsonify = response.json()
+    assert set(jsonify["roles"]) == {
+        "superadmin_users_role",
+        "superadmin_all_users_role",
+        "superadmin_groups_role",
+        "superadmin_all_groups_role",
+        "superadmin_policies_role",
+        "superadmin_all_policies_role",
+        "superadmin_roles_role",
+        "superadmin_all_roles_role"
+    }
+
+
+def test_superadmin_user(
+        fastapi_start_app,
+        fastapi_test_client: "TestClient",
+        sqlite_bus,
+        casbin_enforcer
+):
+    fatc = fastapi_test_client
+    response = fatc.get("/users/superadmin", auth=('superadmin', 'default_password'))
+    jsonified = response.json()
+    assert 'supergroup_role' in jsonified["role_groups"]
+    assert jsonified["user_username"] == 'superadmin'
+    assert casbin_enforcer.has_role_for_user('superadmin', 'supergroup_role')
+
+
+
+
+# def test_superuser_casbin(casbin_enforcer):
+#     pass
+
 
 # def test_create_super_user(sqlite_session_factory, fastapi_test_client: "TestClient"):
 #     session: "Session" = sqlite_session_factory()

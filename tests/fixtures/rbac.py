@@ -1,4 +1,117 @@
+import typing as tp
+import uuid
 
+import pytest
+
+if tp.TYPE_CHECKING:
+    from starlette.testclient import TestClient
+
+
+@pytest.mark.usefixtures("mappers")
+@pytest.fixture
+def supergroup_role(fastapi_start_app, fastapi_test_client: "TestClient", sqlite_bus):
+    fatc = fastapi_test_client
+    from librarius.entrypoints.routers.resources import get_bus
+    fastapi_start_app.dependency_overrides[get_bus] = lambda: sqlite_bus
+
+    superadmin_users_resource = "/users/{id}"
+    superadmin_all_users_resource = "/users/"
+    superadmin_groups_resource = "/groups/{id}"
+    superadmin_all_groups_resource = "/groups/"
+    superadmin_policies_resource = "/policies/{id}"
+    superadmin_all_policies_resource = "/policies/"
+    superadmin_roles_resource = "/roles/{id}"
+    superadmin_all_roles_resource = "/roles/"
+
+    resources = [
+        superadmin_users_resource,
+        superadmin_all_users_resource,
+        superadmin_groups_resource,
+        superadmin_all_groups_resource,
+        superadmin_policies_resource,
+        superadmin_all_policies_resource,
+        superadmin_roles_resource,
+        superadmin_all_roles_resource
+    ]
+
+    for resource_name in resources:
+        fatc.post(
+            "/resources/",
+            data={
+                "username": "root",
+                "password": "default_password",
+                "resource_name": resource_name,
+                "resource_uuid": str(uuid.uuid4())
+            },
+            auth=('root', 'default_password'))
+
+    roles = {
+        "superadmin_users_role": [superadmin_users_resource],
+        "superadmin_all_users_role": [superadmin_all_users_resource],
+        "superadmin_groups_role": [superadmin_groups_resource],
+        "superadmin_all_groups_role": [superadmin_all_groups_resource],
+        "superadmin_policies_role": [superadmin_policies_resource],
+        "superadmin_all_policies_role": [superadmin_all_policies_resource],
+        "superadmin_roles_role": [superadmin_roles_resource],
+        "superadmin_all_roles_role": [superadmin_all_roles_resource]
+    }
+
+    fastapi_start_app.dependency_overrides.clear()
+
+    from librarius.entrypoints.routers.roles import get_bus
+    fastapi_start_app.dependency_overrides[get_bus] = lambda: sqlite_bus
+
+    for role_name, role_resources in roles.items():
+        fatc.post(
+            "/roles/",
+            data={
+                "username": "root",
+                "password": "default_password",
+                "role_name": role_name,
+                "role_uuid": str(uuid.uuid4()),
+                "resources": role_resources
+            },
+            auth=('root', 'default_password')
+        )
+
+    fastapi_start_app.dependency_overrides.clear()
+
+    from librarius.entrypoints.routers.role_groups import get_bus
+    fastapi_start_app.dependency_overrides[get_bus] = lambda: sqlite_bus
+
+    fatc.post(
+        "/role_groups/",
+        data={
+            "username": "root",
+            "password": "default_password",
+            "role_group_name": "supergroup_role",
+            "role_group_uuid": str(uuid.uuid4()),
+            "roles": [i for i in roles.keys()]
+        },
+        auth=('root', 'default_password')
+    )
+
+
+@pytest.mark.usefixtures("mappers", "supergroup_role")
+@pytest.fixture
+def superadmin_user(fastapi_start_app, sqlite_bus, fastapi_test_client):
+    from librarius.entrypoints.routers.users import get_bus
+    fastapi_start_app.dependency_overrides[get_bus] = lambda: sqlite_bus
+
+    fatc = fastapi_test_client
+
+    fatc.post(
+        "/users/",
+        data={
+            "username": "root",
+            "password": "default_password",
+            "user_username": "superadmin",
+            "user_uuid": str(uuid.uuid4()),
+            "role_groups": ["supergroup_role"],
+            "roles": []
+        },
+        auth=('root', 'default_password')
+    )
 
 
 # @pytest.fixture
